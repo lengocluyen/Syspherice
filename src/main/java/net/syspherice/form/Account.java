@@ -19,6 +19,7 @@ public class Account {
 	private String description;
 	private String avatar;
 	private String state;
+	private String role;
 	public String getUsername() {
 		return username;
 	}
@@ -90,6 +91,12 @@ public class Account {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

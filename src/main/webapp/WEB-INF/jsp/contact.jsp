@@ -17,7 +17,7 @@
 							<strong>Send unsuccessful contact!</strong>
 						</div>
 					</c:if>
-
+					
 					<form:form class="import-form" method="post"
 						action='${pageContext.request.contextPath}/contactpage'
 						commandName="contact">

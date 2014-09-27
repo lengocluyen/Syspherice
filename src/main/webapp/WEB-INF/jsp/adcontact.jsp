@@ -15,7 +15,7 @@
 	<form:form class="custom-form" method="post"
 		action='${pageContext.request.contextPath}/contact'
 		commandName="contact">
-		<h3>List of contacts</h3>
+		<h3>Contact List</h3>
 			<table class="table-data">
 				<thead>
 					<tr>

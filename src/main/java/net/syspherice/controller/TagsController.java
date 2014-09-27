@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/tags")
+@SessionAttributes({"IsAdmin"})
 public class TagsController {
 	@Autowired
 	private TagsService tagsService;
@@ -45,12 +47,20 @@ public class TagsController {
 
 	@RequestMapping("/index")
 	public ModelAndView Index(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		return this.IndexData(session);
 	}
 
 	@RequestMapping("/index/{index}")
 	public ModelAndView Index(@PathVariable("index") Integer index,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("tags/index");
 		PagedGenericView<Tags> ulist = new PagedGenericView<Tags>();
 		long count = tagsService.count();
@@ -74,6 +84,10 @@ public class TagsController {
 
 	@RequestMapping(value = "/create")
 	public ModelAndView getCreate(ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("tags/create");
 		sessionManage = new SessionManage(session);
 		Tags tags = new Tags();
@@ -124,7 +138,10 @@ public class TagsController {
 	@RequestMapping("/delete/{tagsID}")
 	public ModelAndView delete(@PathVariable("tagsID") String tagsID,
 			HttpSession session) {
-
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		Boolean result = tagsService.delete(tagsID);
 		ModelAndView mv = this.Index(session);
 
@@ -142,6 +159,10 @@ public class TagsController {
 	@RequestMapping("/update/{TagsID}")
 	public ModelAndView update(@PathVariable("tagsID") String tagsID,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		Tags tagsOrigine = tagsService.single(tagsID);
 		Tags tagsUpdate = tagsOrigine;
 		Boolean result = tagsService.update(tagsOrigine, tagsUpdate);

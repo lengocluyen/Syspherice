@@ -156,7 +156,7 @@ public class UnidentifiedObjectDao extends AbstractDAO {
 		for (FieldCollection fieldCollection : searchType
 				.getFieldOfCollections()) {
 			BasicDBObject query = new BasicDBObject();
-			query.put(fieldCollection.getField(), java.util.regex.Pattern.compile(name));
+			query.put(fieldCollection.getField(), java.util.regex.Pattern.compile(Common.regexForSearchUnicode(name)));
 			DBCursor cursor = DaoFactory.getCollection(
 					fieldCollection.getCollection()).find(query);
 			List<UnidentifiedObject> collections = new ArrayList<UnidentifiedObject>();

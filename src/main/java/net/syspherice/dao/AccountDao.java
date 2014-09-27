@@ -160,6 +160,8 @@ public class AccountDao extends AbstractDAO {
 				doc.get(AccountEnum.Avatar.toString()), ""));
 		data.setState(Common.ConvertToString(
 				doc.get(AccountEnum.State.toString()), ""));
+		data.setRole(Common.ConvertToString(
+				doc.get(AccountEnum.Role.toString()), "user"));
 		return data;
 	}
 
@@ -177,6 +179,7 @@ public class AccountDao extends AbstractDAO {
 		doc.put(AccountEnum.Description.toString(), data.getDescription());
 		doc.put(AccountEnum.Avatar.toString(), data.getAvatar());
 		doc.put(AccountEnum.State.toString(), data.getState());
+		doc.put(AccountEnum.Role.toString(), data.getRole());
 		return doc;
 	}
 
@@ -194,6 +197,7 @@ public class AccountDao extends AbstractDAO {
 		doc.put(AccountEnum.Description.toString(), data.getDescription());
 		doc.put(AccountEnum.Avatar.toString(), data.getAvatar());
 		doc.put(AccountEnum.State.toString(), data.getState());
+		doc.put(AccountEnum.Role.toString(),data.getRole());
 		BasicDBObject bdoc = new BasicDBObject("$set", doc);
 		return bdoc;
 	}

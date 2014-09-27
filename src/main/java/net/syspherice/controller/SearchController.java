@@ -1,8 +1,15 @@
 package net.syspherice.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.syspherice.form.Contact;
@@ -20,6 +27,8 @@ import net.syspherice.service.SearchTypeService;
 import net.syspherice.service.TagsService;
 import net.syspherice.service.UnidentifiedObjectService;
 import net.syspherice.utils.AbsoluteString;
+import net.syspherice.utils.Config;
+import net.syspherice.utils.ExcelsHandles;
 import net.syspherice.utils.MenuBuild;
 import net.syspherice.utils.SessionManage;
 import net.syspherice.validator.ContactValidator;
@@ -28,6 +37,7 @@ import net.syspherice.validator.SearchInfoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +46,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.sun.corba.se.spi.activation.Server;
 
 @Controller
 @RequestMapping("/search")
@@ -72,6 +84,7 @@ public class SearchController {
 	public ModelAndView postSearchPage(
 			@ModelAttribute("searchinfo") SearchInfo searchInfo, ModelMap map,
 			HttpSession session, BindingResult bresult) {
+		sessionManage = new SessionManage(session);
 		ModelAndView mv = new ModelAndView("searchresult");
 		SearchInfoValidator validator = new SearchInfoValidator();
 		validator.validate(searchInfo, bresult);
@@ -79,8 +92,14 @@ public class SearchController {
 			// handle result here
 			Map<String, List<UnidentifiedObject>> result = uObjectService
 					.findByField(searchInfo);
-			mv.addObject(AbsoluteString.searchresult, result);
-			// UnidentifiedObject a = new UnidentifiedObject();
+			if (!result.isEmpty()) {
+				mv.addObject(AbsoluteString.searchresult, result);
+				sessionManage.setSearchInfo(searchInfo);
+			} else {
+				mv.addObject(AbsoluteString.searchresult, null);
+				sessionManage.setSearchInfo(null);
+			}
+			// UnidentifiedObject a = new UnidentifiedObject(
 
 		}
 		// set value display for view
@@ -163,13 +182,84 @@ public class SearchController {
 				MenuBuild.getMenu("search page", session));
 		return mv;
 	}
+
+	@RequestMapping("/exporttoexcel")
+	public void exporttoxsl(HttpSession session, HttpServletResponse response) {
+		sessionManage = new SessionManage(session);
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(Calendar.getInstance().getTime());
+		String fileName = timeStamp + "_"
+				+ sessionManage.getAccount().getUsername() + ".xlsx";
+		String exportFileName = "/uploads/exports/" +fileName;
+		String phycialfile = session.getServletContext().getRealPath(
+				exportFileName);
+		if (sessionManage.getSearchInfo() != null) {
+			Map<String, List<UnidentifiedObject>> result = uObjectService
+					.findByField(sessionManage.getSearchInfo());
+			if (!result.isEmpty()) {
+				ExcelsHandles excelhandles = new ExcelsHandles();
+				if (excelhandles.exportToXsl(result, phycialfile)) {
+					File fileReponse = new File(phycialfile);
+					response.setContentType("application/xlsx");
+					response.setContentLength(new Long(fileReponse.length()).intValue());
+					response.setHeader("Content-Disposition",
+							"attachment; filename="+fileName);
+
+					try {
+						FileCopyUtils.copy(new FileInputStream(fileReponse),
+								response.getOutputStream());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				}
+			}
+		}
+	}
+
+	
+	@RequestMapping("/exporttozip")
+	public void exporttozip(HttpSession session, HttpServletResponse response) {
+		sessionManage = new SessionManage(session);
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(Calendar.getInstance().getTime());
+		String fileName = timeStamp + "_"
+				+ sessionManage.getAccount().getUsername() + ".zip";
+		String exportFileName = "/uploads/exports/" +fileName;
+		String phycialfile = session.getServletContext().getRealPath(
+				exportFileName);
+		if (sessionManage.getSearchInfo() != null) {
+			Map<String, List<UnidentifiedObject>> result = uObjectService
+					.findByField(sessionManage.getSearchInfo());
+			if (!result.isEmpty()) {
+				ExcelsHandles excelhandles = new ExcelsHandles();
+				if (excelhandles.exportToXsl(result, phycialfile)) {
+					File fileReponse = new File(phycialfile);
+					response.setContentType("application/xlsx");
+					response.setContentLength(new Long(fileReponse.length()).intValue());
+					response.setHeader("Content-Disposition",
+							"attachment; filename="+fileName);
+
+					try {
+						FileCopyUtils.copy(new FileInputStream(fileReponse),
+								response.getOutputStream());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				}
+			}
+		}
+	}
+	
 	@RequestMapping("/tags/{tagID}")
-	public ModelAndView getTags(@PathVariable("tagID") String tagID,HttpSession session) {
+	public ModelAndView getTags(@PathVariable("tagID") String tagID,
+			HttpSession session) {
 		ModelAndView mv = new ModelAndView("tagsview");
 		sessionManage = new SessionManage(session);
 
 		List<ItemTag> itemTags = itemTagService.findByTagID(tagID);
-		
+
 		Map<String, List<UnidentifiedObject>> result = uObjectService
 				.findByItemTags(itemTags);
 		mv.addObject(AbsoluteString.searchresult, result);
@@ -177,10 +267,10 @@ public class SearchController {
 				MenuBuild.getMenu("search page", session));
 		return mv;
 	}
+
 	// for ajax
 	@RequestMapping(value = "/searchtypes/{textDataDocID}", method = RequestMethod.GET)
-	public @ResponseBody
-	List<SearchType> getSearchTypesByProjectName(
+	public @ResponseBody List<SearchType> getSearchTypesByProjectName(
 			@PathVariable("textDataDocID") String textDataDocID) {
 		ExcelDataDoc excelDataDoc = excelDataDocService.single(textDataDocID);
 		List<SearchType> searchTypes = searchTypeService

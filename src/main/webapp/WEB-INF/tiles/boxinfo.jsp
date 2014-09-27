@@ -22,6 +22,15 @@
 	
 	<script type="text/javascript">
 	$(document).ready(function(){
+		var textDataDocID = $("#projectType option:selected").val();
+		$.getJSON("${pageContext.request.contextPath}/search/searchtypes/"
+			+ textDataDocID, function(data) {
+			var $selectSearchType = $("#searchType");
+			$selectSearchType.empty();
+			$.each(data, function(i, item) { 
+				$selectSearchType.append("<option value="+item.searchTypeID+">"	+ item.nameDisplay+ "</option");
+								})
+							})
 		$("#projectType").change(function(){
 			
 			var textDataDocID =$("#projectType option:selected").val();

@@ -19,6 +19,7 @@ import net.syspherice.utils.Common;
 import net.syspherice.utils.ExcelsHandles;
 import net.syspherice.utils.MenuBuild;
 import net.syspherice.utils.PagedGenericView;
+import net.syspherice.utils.SessionManage;
 import net.syspherice.utils.SheetInfo;
 import net.syspherice.validator.FolderImageValidator;
 import net.syspherice.validator.SearchTypeValidator;
@@ -31,24 +32,34 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/imagedata")
+@SessionAttributes({"IsAdmin"})
 public class ImageDataController {
 	@Autowired
 	private ImageDataService imageDataService;
 	@Autowired
 	private ExcelDataDocService excelDataDocService;
-
+	SessionManage sessionManage;
 	@RequestMapping("/index")
 	public ModelAndView Index(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		return this.IndexData(session);
 	}
 
 	@RequestMapping("/index/{index}")
 	public ModelAndView Index(@PathVariable("index") Integer index,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("imagedata/index");
 		PagedGenericView<ImageData> ulist = new PagedGenericView<ImageData>();
 
@@ -73,6 +84,10 @@ public class ImageDataController {
 
 	@RequestMapping("/import")
 	public ModelAndView getImportData(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("imagedata/import");
 		FolderImage folderImage = new FolderImage();
 		folderImage.dateImport = Common.getSimpleDateFormat(Calendar
@@ -114,7 +129,10 @@ public class ImageDataController {
 	@RequestMapping("/delete/{imageID}")
 	public ModelAndView delete(@PathVariable("imageID") String imageID,
 			HttpSession session) {
-
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		Boolean result = imageDataService.delete(imageID);
 		ModelAndView mv = this.Index(session);
 
@@ -132,6 +150,10 @@ public class ImageDataController {
 	@RequestMapping("/update/{imageID}")
 	public ModelAndView update(@PathVariable("imageID") String imageID,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ImageData dataOrigine = imageDataService.single(imageID);
 		ImageData dataUpdate = dataOrigine;
 		Boolean result = imageDataService.update(dataOrigine, dataUpdate);

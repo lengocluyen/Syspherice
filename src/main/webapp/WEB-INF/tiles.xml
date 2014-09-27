@@ -81,7 +81,7 @@
 		<put-attribute name="content" value="" />
 		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
 	</definition>
-	<definition name="adaccueil" extends="base.admindefinition">
+	<definition name="admin/adaccueil" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adaccueil.jsp" />
 	</definition>
 	<definition name="import/data" extends="base.admindefinition">
@@ -129,8 +129,9 @@
 	<definition name="imagedata/import" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adimagedataimport.jsp" />
 	</definition>
-	
-	
+	<definition name="admin/adintroduction" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adintroduction.jsp" />
+	</definition>
 	<definition name="contact/index" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adcontact.jsp" />
 	</definition>
@@ -149,6 +150,17 @@
 	<definition name="account/update" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adaccount.jsp" />
 	</definition>
+	
+	<definition name="annotation/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	<definition name="annotation/delete" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	<definition name="annotation/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	
 	<definition name="filemanage" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/filemanage.jsp" />
 	</definition>

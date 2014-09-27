@@ -12,7 +12,8 @@ public enum AccountEnum {
 	Sex("Sex"),
 	Description("Description"),
 	Avatar("Avatar"),
-	State("State");
+	State("State"),
+	Role("Role");
 
 	  private final String text;
 

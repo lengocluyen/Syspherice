@@ -25,17 +25,22 @@ public class Config {
 	public static final String ADMIN_LIST;
 	public static final int PAGE_SIZE;
 	public static final ExtensionsFilter IMAGE_FILTER;
+	public static final String URL_AVATAR_DEFAULT;
+	public static final String INTRODUCTION_FILE_URL;
 	static{
 		ResourceBundle rb=ResourceBundle.getBundle("config");
 		
 		UPL_MAX_SIZE=rb.getString("UPL_MAX_SIZE");
 		ROOT_PATH=rb.getString("ROOT_PATH");
+		
 		TMB_URL=rb.getString("CONTEXT_PATH")+"/tmb/";
 		URL=rb.getString("CONTEXT_PATH")+"/uploads/";
 		ROOT_PATH_AVATAR = rb.getString("ROOT_PATH") + "/avatar";
 		URL_AVATAR = rb.getString("CONTEXT_PATH")+"/uploads/avatar/";
 		ADMIN_LIST = rb.getString("ADMIN_LIST");
 		PAGE_SIZE = Integer.parseInt(rb.getString("PAGE_SIZE"));
+		URL_AVATAR_DEFAULT=  rb.getString("CONTEXT_PATH") + rb.getString("URL_AVATAR_DEFAULT");
 		IMAGE_FILTER = new ExtensionsFilter(new String[]{".png",".jpg",".bmp"});
+		INTRODUCTION_FILE_URL = rb.getString("INTRODUCTION_FILE_URL");
 	}
 }

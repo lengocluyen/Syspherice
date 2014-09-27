@@ -61,34 +61,33 @@ public class MenuBuild {
 		
 		
 		ArrayList<MenuItem> importData = new ArrayList<MenuItem>();
-		importData.add(new MenuItem("/Syspherice/exceldatadoc/create", "Create data import information ", ""));
-		importData.add(new MenuItem("/Syspherice/exceldatadoc/index", "Data import information", ""));
-		importData.add(new MenuItem("/Syspherice/import/data", "Data Import", ""));
+		importData.add(new MenuItem("/Syspherice/exceldatadoc/create", "Create import data information ", ""));
+		importData.add(new MenuItem("/Syspherice/exceldatadoc/index", "Project list", ""));
+		//importData.add(new MenuItem("/Syspherice/import/data", "Data Import", ""));
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/import/", "Import", ""),importData));
 		
 		ArrayList<MenuItem> searchtype = new ArrayList<MenuItem>();
-		searchtype.add(new MenuItem("/Syspherice/searchtype/chooseproject", "Create a type of search", ""));
-		searchtype.add(new MenuItem("/Syspherice/searchtype/index", "Type of search", ""));
-		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/searchtype/index", "Type of search", ""),searchtype));
+		searchtype.add(new MenuItem("/Syspherice/searchtype/chooseproject", "Create a type search", ""));
+		searchtype.add(new MenuItem("/Syspherice/searchtype/index", "Type search", ""));
+		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/searchtype/index", "Type search", ""),searchtype));
 		
 		ArrayList<MenuItem> imagedata = new ArrayList<MenuItem>();
 		imagedata.add(new MenuItem("/Syspherice/imagedata/import", "Import image data", ""));
-		imagedata.add(new MenuItem("/Syspherice/imagedata/index", "List of image data", ""));
+		imagedata.add(new MenuItem("/Syspherice/imagedata/index", "Image data list", ""));
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/imagedata/index", "Image data", ""),imagedata));
 		
 		ArrayList<MenuItem> tagmenu = new ArrayList<MenuItem>();
-		tagmenu.add(new MenuItem("/Syspherice/tags/index", "List of Tags", ""));
+		tagmenu.add(new MenuItem("/Syspherice/tags/index", "Tags list", ""));
 		tagmenu.add(new MenuItem("/Syspherice/tags/create", "Insert a Tag", ""));
-		tagmenu.add(new MenuItem("/Syspherice/itemtag/index", "List of Item Tag", ""));
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/tags/index", "Tags", ""),tagmenu));
 		
 		
 		ArrayList<MenuItem> contact = new ArrayList<MenuItem>();
-		contact.add(new MenuItem("/Syspherice/contact/index", "List of Contacts", ""));
+		contact.add(new MenuItem("/Syspherice/contact/index", "Contact list", ""));
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/contact/index", "Contact", ""),contact));
 		
 		ArrayList<MenuItem> account = new ArrayList<MenuItem>();
-		account.add(new MenuItem("/Syspherice/account/index", "List of Accounts", ""));
+		account.add(new MenuItem("/Syspherice/account/index", "Account list", ""));
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/account/index", "Account", ""),account));
 		
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/admin/filemanage", "File Manage", ""),null));

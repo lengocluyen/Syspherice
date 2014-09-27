@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/searchtype")
+@SessionAttributes({"IsAdmin"})
 public class SearchTypeController {
 	@Autowired
 	private SearchTypeService searchTypeService;
@@ -45,12 +47,20 @@ public class SearchTypeController {
 
 	@RequestMapping("/index")
 	public ModelAndView Index(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		return this.IndexData(session);
 	}
 
 	@RequestMapping("/index/{index}")
 	public ModelAndView Index(@PathVariable("index") Integer index,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("searchtype/index");
 		PagedGenericView<SearchType> ulist = new PagedGenericView<SearchType>();
 
@@ -75,6 +85,10 @@ public class SearchTypeController {
 
 	@RequestMapping(value = "/chooseproject")
 	public ModelAndView getChooseProject(ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("searchtype/chooseproject");
 		mv.addObject(AbsoluteString.searchtype, new SearchType());
 
@@ -97,6 +111,10 @@ public class SearchTypeController {
 
 	@RequestMapping(value = "/create")
 	public ModelAndView getCreate(ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("searchtype/create");
 		sessionManage = new SessionManage(session);
 		SearchType searchType = new SearchType();
@@ -160,7 +178,10 @@ public class SearchTypeController {
 	public ModelAndView delete(
 			@PathVariable("searchTypeID") String searchTypeID,
 			HttpSession session) {
-
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		Boolean result = searchTypeService.delete(searchTypeID);
 		ModelAndView mv = this.Index(session);
 
@@ -179,6 +200,10 @@ public class SearchTypeController {
 	public ModelAndView update(
 			@PathVariable("searchTypeID") String searchTypeID,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		SearchType searchTypeOrigine = searchTypeService.single(searchTypeID);
 		SearchType searchTypeUpdate = searchTypeOrigine;
 		searchTypeUpdate.setState(searchTypeOrigine.getState().compareTo(

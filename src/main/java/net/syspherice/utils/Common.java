@@ -5,12 +5,18 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import net.syspherice.form.SearchType;
 
@@ -19,7 +25,95 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
 public class Common {
+	public static Boolean exportToZip(String zipfile, String folder){
+		try{
+		byte[] buffer = new byte[1024];
+		FileOutputStream fout = new FileOutputStream(zipfile);
+		ZipOutputStream zout= new ZipOutputStream(fout);
+		File dir = new File(folder);
+		if(dir.isDirectory()){
+			File[] files = dir.listFiles();
+			for(int i=0;i<files.length;i++){
+			FileInputStream fin = new FileInputStream(files[i]);
+			zout.putNextEntry(new ZipEntry(files[i].getName()));
+			int length;
+			while((length=fin.read(buffer))>0){
+				zout.write(buffer,0,length);
+			}
+			zout.closeEntry();
+			fin.close();
+			zout.close();
+			return true;
+			}
+		}
+		else {
+			zout.closeEntry();
+			zout.close();
+			return false;
+			}
+		}
+		catch(Exception e){
+			return false;
+		}
+		return false;
+	}
+	public static String exportSearchResultToPdf(String htmlContent,String author,String title ) {
+		Document document = new Document(
+				com.itextpdf.text.PageSize.A4);
+		String fileNameWithPath = Config.ROOT_PATH + "PDF-HtmlWorkerParsed.pdf";
+		
+		FileOutputStream fos;
+		try {
+			
+			fos = new FileOutputStream(fileNameWithPath);
+		
+		PdfWriter pdfWriter = PdfWriter.getInstance(document, fos);
+		document.open();
+		// **********************************************************
+		document.addAuthor(author);
+		document.addSubject(title);
+		document.addCreationDate();
+		document.addTitle(title);
+		// **********************************************************/
+
+		HTMLWorker htmlWorker = new HTMLWorker(document);
+		htmlWorker.parse(new StringReader(htmlContent.toString()));
+		
+		document.close();
+		fos.close();
+		} catch (FileNotFoundException e) {
+			
+			return "";
+		} catch (DocumentException e) {
+			return "";
+		} catch (IOException e) {
+			return "";
+		}
+		return fileNameWithPath;
+	}
+
+	public static String regexForSearchUnicode(String asciiStr) {
+		String oStr = "(o|ò|ó|ỏ|õ|ọ|ô|ố|ồ|ộ|ổ|ỗ|ơ|ở|ờ|ớ|ợ|ỡ)";
+		String aStr = "(a|à|á|ả|ã|ạ|â|ẩ|ẫ|ấ|ầ|ậ|ă|ẳ|ẵ|ắ|ằ|ặ)";
+		String iStr = "(i|ì|í|ĩ|ỉ|ị)";
+		String uStr = "(u|ù|ú|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự)";
+		String eStr = "(e|è|é|ẽ|ẻ|ẹ|ê|ể|ễ|ế|ề|ệ)";
+		String yStr = "(y|ý|ỳ|ỷ|ỹ|ỵ)";
+		String dStr = "(đ|Đ)";
+		asciiStr = asciiStr.replaceAll("o", oStr);
+		asciiStr = asciiStr.replaceAll("a", aStr);
+		asciiStr = asciiStr.replaceAll("i", iStr);
+		asciiStr = asciiStr.replaceAll("u", uStr);
+		asciiStr = asciiStr.replaceAll("e", eStr);
+		asciiStr = asciiStr.replaceAll("y", yStr);
+		asciiStr = asciiStr.replaceAll("d", dStr);
+		return asciiStr;
+	}
 
 	public static List<File> listFilesForFolder(File folder) {
 		List<File> result = new ArrayList<File>();
@@ -50,10 +144,10 @@ public class Common {
 	public static Boolean checkExisteExtensionFile(File file,
 			String[] extensions) {
 		String ex = FilenameUtils.getExtension(file.getName());
-			for (int i = 0; i < extensions.length; i++) {
-				if (extensions[i].compareTo(ex.toLowerCase()) == 0)
-					return true;
-			}
+		for (int i = 0; i < extensions.length; i++) {
+			if (extensions[i].compareTo(ex.toLowerCase()) == 0)
+				return true;
+		}
 		return false;
 	}
 

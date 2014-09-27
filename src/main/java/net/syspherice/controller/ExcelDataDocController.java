@@ -27,10 +27,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/exceldatadoc")
+@SessionAttributes({"IsAdmin"})
 public class ExcelDataDocController {
 
 	@Autowired
@@ -41,12 +43,20 @@ public class ExcelDataDocController {
 
 	@RequestMapping("/index")
 	public ModelAndView Index(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		return this.IndexData(session);
 	}
 
 	@RequestMapping("/index/{index}")
 	public ModelAndView Index(@PathVariable("index") Integer index,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("exceldatadoc/index");
 		PagedGenericView<ExcelDataDoc> ulist = new PagedGenericView<ExcelDataDoc>();
 
@@ -75,7 +85,11 @@ public class ExcelDataDocController {
 
 	// redirect to view list excel
 	@RequestMapping(value = "/create", params = "sblist", method = RequestMethod.POST)
-	public ModelAndView listExcelDocPage() {
+	public ModelAndView listExcelDocPage(HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("exceldatadoc/index");
 		return mv;
 	}
@@ -94,6 +108,10 @@ public class ExcelDataDocController {
 
 	@RequestMapping("/create")
 	public ModelAndView getCreate(ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("exceldatadoc/create");
 
 		ExcelDataDoc doc = new ExcelDataDoc();
@@ -160,6 +178,10 @@ public class ExcelDataDocController {
 	public ModelAndView delete(
 			@PathVariable("excelDataDocID") String excelDataDocID,
 			HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		Boolean result = excelDataDocService.delete(excelDataDocID);
 		uObjectService.deleteByTextDataDocID(excelDataDocID);
 		ModelAndView mv = this.Index(session);
@@ -179,6 +201,10 @@ public class ExcelDataDocController {
 	public ModelAndView getUpdate(
 			@PathVariable("excelDataDocID") String excelDataDocID,
 			ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("exceldatadoc/update");
 
 		ExcelDataDoc doc = excelDataDocService.single(excelDataDocID);

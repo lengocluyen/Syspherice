@@ -25,7 +25,7 @@
 	<form:form class="custom-form" method="post"
 		action='${pageContext.request.contextPath}/searchtype/index'
 		commandName="searchtype">
-		<h3>List of Type de recherce</h3>
+		<h3>Search Type List</h3>
 			<table class="table-data">
 				<thead>
 					<tr>
@@ -35,7 +35,7 @@
 						<th>Fields</th>
 						<th>Create Date</th>
 						<th>User import</th>
-						<th>Desciption</th>
+						<th>Description</th>
 						<th>State</th>
 						<th>Delete</th>
 					</tr>

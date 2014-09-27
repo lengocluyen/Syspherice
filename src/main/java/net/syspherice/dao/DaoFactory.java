@@ -6,6 +6,7 @@ import com.drew.metadata.Tag;
 import com.mongodb.DBCollection;
 
 import net.syspherice.form.Account;
+import net.syspherice.form.Annotation;
 import net.syspherice.form.Contact;
 import net.syspherice.form.ExcelDataDoc;
 import net.syspherice.form.ImageData;
@@ -43,6 +44,9 @@ public class DaoFactory {
 	
 	public static AccountDao getAccountDao(){
 		return (AccountDao) getDAOByClassAndName(AccountDao.class, Account.class.getSimpleName());
+	}
+	public static AnnotationDao getAnnotationDao(){
+		return (AnnotationDao) getDAOByClassAndName(AnnotationDao.class, Annotation.class.getSimpleName());
 	}
 	public static ContactDao getContactDao(){
 		return  (ContactDao) getDAOByClassAndName(ContactDao.class, Contact.class.getSimpleName());

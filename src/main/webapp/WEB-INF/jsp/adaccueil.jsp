@@ -1,36 +1,34 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<h3 style="padding-left:20px;"> List of Application</h3>
+<h3 style="padding-left:20px;"> APPLICATION LIST</h3>
 <div id="cpanel" style="margin:20px;">
 
 		<div class="icon">
 			<a href="${pageContext.request.contextPath}/exceldatadoc/index"><img
 				id="item05"
 				src=<c:url value="/resources/images/icons/icon-48-component.png"/>
-				style="border-width: 0px;"> <span class="title">Excel
-					and project list</span> </a>
+				style="border-width: 0px;"> <span class="title">Project list</span> </a>
 		</div>
 		<div class="icon">
 			<a href="${pageContext.request.contextPath}/exceldatadoc/create"><img
 				id="item05"
 				src=<c:url value="/resources/images/icons/screen-add.png"/>
-				style="border-width: 0px;"> <span class="title">Create a excel
-					and project</span> </a>
+				style="border-width: 0px;"> <span class="title">Create a new project</span> </a>
 		</div>
-		<div class="icon">
+		<!--<div class="icon">
 			<a href="${pageContext.request.contextPath}/admin/impordata"><img
 				id="item01"
 				src='<c:url value="/resources/images/icons/icon-48-article-add.png"/>'
 				style="border-width: 0px;"> <span class="title">Import
 					Data</span> </a>
-		</div>
+		</div>-->
 
 		<div class="icon">
 			<a href="${pageContext.request.contextPath}/searchtype/index"><img
 				id="item01"
 				src='<c:url value="/resources/images/icons/screen-sonic.png"/>'
-				style="border-width: 0px;"> <span class="title">Type of Search</span>
+				style="border-width: 0px;"> <span class="title">Type search</span>
 			</a>
 		</div>
 		
@@ -38,7 +36,7 @@
 			<a href="${pageContext.request.contextPath}/searchtype/chooseproject"><img
 				id="item01"
 				src='<c:url value="/resources/images/icons/screen-default.png"/>'
-				style="border-width: 0px;"> <span class="title">Create a type of search</span>
+				style="border-width: 0px;"> <span class="title">Create a type search</span>
 			</a>
 		</div>
 
@@ -46,7 +44,7 @@
 			<a href="${pageContext.request.contextPath}/imagedata/index"><img
 				id="item01"
 				src='<c:url value="/resources/images/icons/screen-media.png"/>'
-				style="border-width: 0px;"> <span class="title">List of Image data</span>
+				style="border-width: 0px;"> <span class="title">Image data list</span>
 			</a>
 		</div>
 		
@@ -67,13 +65,13 @@
 			</a>
 		</div>
 		
-		<div class="icon">
+		<!--<div class="icon">
 			<a href="${pageContext.request.contextPath}/itemtag/index"><img
 				id="item01"
 				src='<c:url value="/resources/images/icons/tpl-khepri-module.png"/>'
 				style="border-width: 0px;"> <span class="title">Item Tags</span>
 			</a>
-		</div>
+		</div>-->
 
 
 		<div class="icon">
@@ -97,6 +95,13 @@
 				id="item04"
 				src='<c:url value="/resources/images/icons/icon-48-section.png"/>'>
 				<span class="title">File Manage</span> </a>
+		</div>
+		<div class="icon">
+			<a href="${pageContext.request.contextPath}/annotation/index"><img
+				id="item01"
+				src='<c:url value="/resources/images/icons/tpl-khepri-article.png"/>'
+				style="border-width: 0px;"> <span class="title">Annotation</span>
+			</a>
 		</div>
 		<div class="icon">
 			<a href="${pageContext.request.contextPath}/admin/introduction"><img

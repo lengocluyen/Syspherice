@@ -37,5 +37,6 @@ public class AbsoluteString {
 	public static final String uobject = "uobject";
 	public static final String tags= "tags";
 	public static final String itemtags = "itemtags";
+	public static final String annotation = "annotation";
 	
 }

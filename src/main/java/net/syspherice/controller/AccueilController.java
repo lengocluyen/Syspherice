@@ -19,6 +19,7 @@ import net.syspherice.service.TagsService;
 import net.syspherice.utils.AbsoluteString;
 import net.syspherice.utils.Common;
 import net.syspherice.utils.Config;
+import net.syspherice.utils.FileHandle;
 import net.syspherice.utils.MenuBuild;
 import net.syspherice.utils.SessionManage;
 import net.syspherice.validator.AccountValidator;
@@ -52,16 +53,18 @@ public class AccueilController {
 	private SearchTypeService searchTypeService;
 	@Autowired
 	private TagsService tagsService;
+
 	@RequestMapping("/")
 	public ModelAndView accueil(ModelMap map, HttpSession session) {
 		ModelAndView mv = new ModelAndView("accueil");
 		SessionManage sessionManage = new SessionManage(session);
-		// set menu display
 		sessionManage.setIsAdminPage(false);
+		// set menu display
 		mv.addObject(AbsoluteString.loginreload, null);
-		
+
 		mv.addObject(AbsoluteString.projects, excelDataDocService.all());
 		mv.addObject(AbsoluteString.searchinfo, new SearchInfo());
+		
 		mv.addObject(AbsoluteString.menu, MenuBuild.getMenu("home", session));
 		mv.addObject(AbsoluteString.tags, tagsService.all());
 		return mv;
@@ -78,7 +81,7 @@ public class AccueilController {
 			Account account = accountService.login(login.getUsername(),
 					login.getPassword());
 			if (account != null) {
-				if (account.getState() != "unactive") {
+				if (account.getState() != "inactive") {
 					Account origine = account;
 					account.setLastLogin(Common.getSimpleDateFormat(Calendar
 							.getInstance().getTime()));
@@ -86,7 +89,7 @@ public class AccueilController {
 					sessionManage.setAccount(account);
 					sessionManage.setIsLogin(true);
 					if (Common.checkStringInArray(Config.ADMIN_LIST,
-							account.getUsername())) {
+							account.getUsername())||account.getRole().compareTo("admin")==0) {
 						sessionManage.setIsAdmin(true);
 						return new ModelAndView("redirect:admin/");
 					} else {
@@ -125,12 +128,18 @@ public class AccueilController {
 	@RequestMapping(value = "/introduction")
 	public ModelAndView Introduction(ModelMap map, HttpSession session) {
 		ModelAndView mv = new ModelAndView("introduction");
+		String phycialfile = session.getServletContext().getRealPath(Config.INTRODUCTION_FILE_URL);
+		File file = new File(phycialfile);
+		FileHandle fh = new FileHandle();
+		String data = fh.getContents(file);
+		mv.addObject("data", data);
 		// set menu display
 		mv.addObject(AbsoluteString.menu,
 				MenuBuild.getMenu("introduction", session));
 		return mv;
 	}
-	//update account
+
+	// update account
 	@RequestMapping(value = "/registration/{username}")
 	public ModelAndView UpdateRegistration(
 			@PathVariable("username") String username, ModelMap map,
@@ -155,49 +164,62 @@ public class AccueilController {
 		validator.validate(account, bresult);
 		if (!bresult.hasErrors()) {
 			String ex = FilenameUtils.getExtension(file.getOriginalFilename());
-			if (!file.isEmpty()
-					&& (ex.toLowerCase().compareTo("jpg") == 0
-							|| ex.toLowerCase().compareTo("png") == 0 || ex
-							.toLowerCase().compareTo("gif") == 0)) {
-				try {
+			if (!file.isEmpty()) {
+				if (ex.toLowerCase().compareTo("jpg") == 0
+						|| ex.toLowerCase().compareTo("png") == 0
+						|| ex.toLowerCase().compareTo("gif") == 0) {
 
-					byte[] bytes = file.getBytes();
-					// creating the directory to store file
-					File dir = new File(Config.ROOT_PATH_AVATAR);
-					if (!dir.exists())
-						dir.mkdirs();
-					// create the file on server
-					File serverFile = new File(dir.getAbsoluteFile()
-							+ File.separator + account.getUsername() + "." + ex);
-					BufferedOutputStream stream = new BufferedOutputStream(
-							new FileOutputStream(serverFile));
-					stream.write(bytes);
-					stream.close();
-					account.setAvatar(Config.URL_AVATAR + account.getUsername()
-							+ "." + ex);
-				} catch (Exception e) {
+					try {
 
+						byte[] bytes = file.getBytes();
+						// creating the directory to store file
+						File dir = new File(Config.ROOT_PATH_AVATAR);
+						if (!dir.exists())
+							dir.mkdirs();
+						// create the file on server
+						File serverFile = new File(dir.getAbsoluteFile()
+								+ File.separator + account.getUsername() + "."
+								+ ex);
+						BufferedOutputStream stream = new BufferedOutputStream(
+								new FileOutputStream(serverFile));
+						stream.write(bytes);
+						stream.close();
+						account.setAvatar(Config.URL_AVATAR
+								+ account.getUsername() + "." + ex);
+					} catch (Exception e) {
+					}
+
+				} else {
+					mv.addObject(AbsoluteString.noticefail,
+							"Accept only files images: *.png, *.jpg, *.gif!");
+					mv.addObject(AbsoluteString.isactionupdate, false);
+					mv.addObject(AbsoluteString.menu,
+							MenuBuild.getMenu("registration", session));
+					return mv;
 				}
-				Account origine = account;
 
-				account.setLastLogin(Common.getSimpleDateFormat(Calendar
-						.getInstance().getTime()));
-				Boolean result = accountService.update(origine, account);
-				if (result) {
-					mv.addObject(AbsoluteString.noticesuccess, " ");
-				} else
-					mv.addObject(AbsoluteString.noticefail, " ");
+			} else {
+				// image default
+				account.setAvatar(Config.URL_AVATAR_DEFAULT);
+			}
+			Account origine = account;
+
+			account.setLastLogin(Common.getSimpleDateFormat(Calendar
+					.getInstance().getTime()));
+			Boolean result = accountService.update(origine, account);
+			if (result) {
+				mv.addObject(AbsoluteString.noticesuccess, " ");
 			} else
 				mv.addObject(AbsoluteString.noticefail,
-						"Accept only files images: *.png, *.jpg, *.gif!");
-		} else
-			mv.addObject(AbsoluteString.noticefail, " ");
+						"Registration is not succesful!");
+		}
 		// set menu display
 		mv.addObject(AbsoluteString.isactionupdate, true);
 		mv.addObject(AbsoluteString.menu,
 				MenuBuild.getMenu("registration", session));
 		return mv;
 	}
+
 	// New registration
 	@RequestMapping(value = "/registration")
 	public ModelAndView Registration(ModelMap map, HttpSession session) {
@@ -221,46 +243,57 @@ public class AccueilController {
 		validator.validate(account, bresult);
 		if (!bresult.hasErrors()) {
 			String ex = FilenameUtils.getExtension(file.getOriginalFilename());
-			if (!file.isEmpty()
-					&& (ex.toLowerCase().compareTo("jpg") == 0
-							|| ex.toLowerCase().compareTo("png") == 0 || ex
-							.toLowerCase().compareTo("gif") == 0)) {
-				try {
+			if (!file.isEmpty()) {
+				if (ex.toLowerCase().compareTo("jpg") == 0
+						|| ex.toLowerCase().compareTo("png") == 0
+						|| ex.toLowerCase().compareTo("gif") == 0) {
+					try {
 
-					byte[] bytes = file.getBytes();
-					// creating the directory to store file
-					File dir = new File(Config.ROOT_PATH_AVATAR);
-					if (!dir.exists())
-						dir.mkdirs();
-					// create the file on server
-					File serverFile = new File(dir.getAbsoluteFile()
-							+ File.separator + account.getUsername() + "." + ex);
-					BufferedOutputStream stream = new BufferedOutputStream(
-							new FileOutputStream(serverFile));
-					stream.write(bytes);
-					stream.close();
-					account.setAvatar(Config.URL_AVATAR + account.getUsername()
-							+ "." + ex);
-				} catch (Exception e) {
-
-				}
-				if (accountService.single(account.getUsername()) != null) {
-					mv.addObject(AbsoluteString.noticefail, "Existe username!");
+						byte[] bytes = file.getBytes();
+						// creating the directory to store file
+						File dir = new File(Config.ROOT_PATH_AVATAR);
+						if (!dir.exists())
+							dir.mkdirs();
+						// create the file on server
+						File serverFile = new File(dir.getAbsoluteFile()
+								+ File.separator + account.getUsername() + "."
+								+ ex);
+						BufferedOutputStream stream = new BufferedOutputStream(
+								new FileOutputStream(serverFile));
+						stream.write(bytes);
+						stream.close();
+						account.setAvatar(Config.URL_AVATAR
+								+ account.getUsername() + "." + ex);
+					} catch (Exception e) {
+						account.setAvatar(Config.URL_AVATAR_DEFAULT);
+					}
 				} else {
-					account.setDateCreate(Common.getSimpleDateFormat(Calendar
-							.getInstance().getTime()));
-					account.setState("active");
-					Boolean result = accountService.add(account);
-					if (result) {
-						mv.addObject(AbsoluteString.noticesuccess, true);
-					} else
-						mv.addObject(AbsoluteString.noticefail, true);
+					mv.addObject(AbsoluteString.noticefail,
+							"Accept only files images: *.png, *.jpg, *.gif!");
+					mv.addObject(AbsoluteString.isactionupdate, false);
+					mv.addObject(AbsoluteString.menu,
+							MenuBuild.getMenu("registration", session));
+					return mv;
 				}
-			} else
-				mv.addObject(AbsoluteString.noticefail,
-						"Accept only files images: *.png, *.jpg, *.gif!");
-		} else
-			mv.addObject(AbsoluteString.noticefail, true);
+
+			} else {
+				// image default
+				account.setAvatar(Config.URL_AVATAR_DEFAULT);
+			}
+			if (accountService.single(account.getUsername()) != null) {
+				mv.addObject(AbsoluteString.noticefail, "Existe username!");
+			} else {
+				account.setDateCreate(Common.getSimpleDateFormat(Calendar
+						.getInstance().getTime()));
+				account.setState("active");
+				account.setRole("user");
+				Boolean result = accountService.add(account);
+				if (result) {
+					mv.addObject(AbsoluteString.noticesuccess, true);
+				} else
+					mv.addObject(AbsoluteString.noticefail, true);
+			}
+		}
 		// set menu display
 		mv.addObject(AbsoluteString.isactionupdate, false);
 		mv.addObject(AbsoluteString.menu,

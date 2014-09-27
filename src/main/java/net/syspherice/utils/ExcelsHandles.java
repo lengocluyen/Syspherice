@@ -2,14 +2,17 @@ package net.syspherice.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.syspherice.form.ExcelMetaData;
+import net.syspherice.form.UnidentifiedObject;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.POIXMLProperties;
@@ -20,8 +23,13 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.RichTextString;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -211,6 +219,54 @@ public class ExcelsHandles {
 			e.printStackTrace();
 		}
 		return results;
+	}
+	//write data to xls
+	public Boolean exportToXsl(Map<String, List<UnidentifiedObject>> data, String url){
+		
+		try{
+			Workbook wb = new XSSFWorkbook();
+			CreationHelper createHelper = wb.getCreationHelper();
+			for(int i=0;i<data.size();i++){
+				String collection = data.keySet().toArray()[i].toString();
+				List<UnidentifiedObject> uObjects = data.get(data.keySet().toArray()[i]);
+				String sheetName = collection.substring(collection.lastIndexOf("_")+1,collection.length());
+				Sheet sheet = wb.createSheet(sheetName);
+				
+				int irows=1;
+				int icolumns =0;
+				Boolean titleRow=false;
+				for(UnidentifiedObject uobj : uObjects){
+					if(!titleRow){
+						Row row = sheet.createRow((short) irows++);
+					for(int j=2;j<uobj.getData().size();j++){
+						row.createCell(icolumns++).setCellValue(
+							createHelper.createRichTextString(uobj.getData().keySet().toArray()[j].toString()));
+					
+					}
+					titleRow=true;
+					icolumns=0;
+					}
+					Row row = sheet.createRow((short) irows++);
+					for(int j=2;j<uobj.getData().size();j++){
+						if(uobj.getData().get(uobj.getData().keySet().toArray()[j])!=null)
+							row.createCell(icolumns++).setCellValue(
+									createHelper.createRichTextString(uobj.getData().get(uobj.getData().keySet().toArray()[j]).toString()));
+						else
+							row.createCell(icolumns++).setCellValue(
+									createHelper.createRichTextString(" "));
+					}
+					icolumns=0;
+				}
+			}
+			// Write the output to a file
+			FileOutputStream fileOut = new FileOutputStream(url);
+			wb.write(fileOut);
+			fileOut.close();	
+		}
+		catch(Exception e){
+			return false;
+		}
+			return true;			
 	}
 
 }

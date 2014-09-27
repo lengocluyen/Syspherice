@@ -15,7 +15,7 @@
 	<form:form class="custom-form" method="post"
 		action='${pageContext.request.contextPath}/imagedata'
 		commandName="imagedata">
-		<h3>List of Image Data</h3>
+		<h3>Image Data List</h3>
 			<table class="table-data">
 				<thead>
 					<tr>

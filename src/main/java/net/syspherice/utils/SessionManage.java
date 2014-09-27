@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import net.syspherice.form.Account;
 import net.syspherice.form.ExcelDataDoc;
+import net.syspherice.form.SearchInfo;
 
 public class SessionManage {
 	HttpSession session;
@@ -14,7 +15,7 @@ public class SessionManage {
 	private Boolean isLogin;
 	private Boolean isAdmin;
 	private Boolean isAdminPage;
-
+	private SearchInfo searchInfo;
 	public Account getAccount() {
 		if (account != null)
 			return account;
@@ -46,6 +47,7 @@ public class SessionManage {
 		else
 			// return true;
 			// test
+			if(session.getAttribute("IsAdmin")==null) return false;
 			return (Boolean) session.getAttribute("IsAdmin");
 	}
 
@@ -53,13 +55,13 @@ public class SessionManage {
 		session.setAttribute("IsAdmin", isAdmin);
 		this.isAdmin = isAdmin;
 	}
-
 	public Boolean getIsAdminPage() {
 		if (isAdminPage != null)
 			return isAdminPage;
 		else
 			// return true;
 			// test
+			if(session.getAttribute("IsAdminPage")==null) return false;
 			return (Boolean) session.getAttribute("IsAdminPage");
 	}
 
@@ -67,7 +69,6 @@ public class SessionManage {
 		session.setAttribute("IsAdminPage", isAdminPage);
 		this.isAdminPage = isAdminPage;
 	}
-
 	// end account session
 	// Sheet info
 	private SheetInfo sheetInfo;
@@ -151,6 +152,20 @@ public class SessionManage {
 		session.setAttribute("collectionID", collectionID);
 
 	}
+	
+	public SearchInfo getSearchInfo() {
+		if (searchInfo != null)
+			return searchInfo;
+		else
+			return (SearchInfo) session.getAttribute("SearchInfoData");
+	}
+
+	public void setSearchInfo(SearchInfo searchInfos) {
+		session.setAttribute("SearchInfoData", searchInfos);
+		this.searchInfo = searchInfos;
+	}
+	
+	
 
 	public HttpSession getSession() {
 		return session;

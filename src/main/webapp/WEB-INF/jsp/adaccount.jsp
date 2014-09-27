@@ -28,6 +28,7 @@
 						<!--<th>Date Create</th>-->
 						 <th>Last Login</th>
 						<th>State</th>
+						<th>Role</th>
 						<th>Delete</th>
 					</tr>
 				</thead>
@@ -51,7 +52,17 @@
 								</c:when>
 							<c:otherwise>
 									<td><a
-										href="${pageContext.request.contextPath}/account/update/${data.username}">Unactive</a></td>
+										href="${pageContext.request.contextPath}/account/update/${data.username}">Inactive</a></td>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${data.role=='user'}">
+									<td><a
+										href="${pageContext.request.contextPath}/account/updaterole/${data.username}">User</a></td>
+								</c:when>
+							<c:otherwise>
+									<td><a
+										href="${pageContext.request.contextPath}/account/updaterole/${data.username}">Admin</a></td>
 
 								</c:otherwise>
 							</c:choose>

@@ -18,12 +18,17 @@
 					<c:when test="${!empty sessionScope.Account}">
 						<li><a style="color: white">${sessionScope.Account.firstName}
 								${sessionScope.Account.lastName}</a></li>
-						<c:if test="${sessionScope.IsAdminPage=='true'}">
-							<li><a href="${pageContext.request.contextPath}">User page</a></li>
-						</c:if>
-						<c:if test="${sessionScope.IsAdminPage=='false'}">
-							<li><a href="${pageContext.request.contextPath}/admin/">Admin
-									page</a></li>
+						<c:if test="${sessionScope.IsAdmin=='true'}">
+							<c:choose>
+								<c:when test="${sessionScope.IsAdminPage=='false'}">
+									<li><a href="${pageContext.request.contextPath}/admin/">Admin
+											page</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a href="${pageContext.request.contextPath}">User
+											page</a></li>
+								</c:otherwise>
+							</c:choose>
 						</c:if>
 						<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
 					</c:when>

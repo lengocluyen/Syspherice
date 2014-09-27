@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.syspherice.form.ExcelDataDoc;
@@ -21,6 +22,7 @@ import net.syspherice.utils.*;
 
 @Controller
 @RequestMapping("/import")
+@SessionAttributes({"IsAdmin"})
 public class ImportController {
 	@Autowired
 	private UnidentifiedObjectService uObjectService;
@@ -30,6 +32,10 @@ public class ImportController {
 	
 	@RequestMapping("/data")
 	public ModelAndView getImportData(ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("import/data");
 		mv.addObject(AbsoluteString.tab1, "in active");
 		mv.addObject(AbsoluteString.tab2, "");
@@ -48,6 +54,10 @@ public class ImportController {
 
 	@RequestMapping("/dataid/{excelDataDocID}")
 	public ModelAndView getImportDataByTextDocID(@PathVariable("excelDataDocID") String excelDataDocID,ModelMap map, HttpSession session) {
+		sessionManage = new SessionManage(session);
+		if(!sessionManage.getIsAdmin()){
+			return new ModelAndView("redirect:/");
+		}
 		ModelAndView mv = new ModelAndView("import/dataid");
 		mv.addObject(AbsoluteString.tab1, "in active");
 		mv.addObject(AbsoluteString.tab2, "");
@@ -69,9 +79,10 @@ public class ImportController {
 	public ModelAndView postImportFinderCheckData(
 			@ModelAttribute("sheetinfo") SheetInfo sheetinfo, ModelMap map,
 			HttpSession session) {
+		
 		sessionManage = new SessionManage(session);
 		ModelAndView mv = new ModelAndView("import/data");
-		String filename = sheetinfo.getPath().substring(12,
+		String filename = sheetinfo.getPath().substring(11,
 				sheetinfo.getPath().length());
 		String phycialfile = session.getServletContext().getRealPath(filename);
 		ExcelsHandles exlhandle = new ExcelsHandles();
