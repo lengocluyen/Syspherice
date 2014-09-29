@@ -9,7 +9,17 @@ public class Annotation {
 	private String dateModify;
 	private String userCreate;
 	private String content;
+	private String nameObject;
 	private String state;
+	
+	public String getNameObject() {
+		return nameObject;
+	}
+	public void setNameObject(String nameObject) {
+		this.nameObject = nameObject;
+	}
+	
+	
 	public String getAnnotationID() {
 		return annotationID;
 	}

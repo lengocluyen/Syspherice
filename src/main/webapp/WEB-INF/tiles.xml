@@ -63,6 +63,12 @@
 	<definition name="viewdetail" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/viewdetail.jsp" />
 	</definition>
+	<definition name="annotation/add" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
+	</definition>
+	<definition name="annotation/del" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
+	</definition>
 	<definition name="tagsview" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/viewtagsdetail.jsp" />
 	</definition>
@@ -123,7 +129,7 @@
 	<definition name="tags/update" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adtagscreate.jsp" />
 	</definition>
-	<definition name="imagedata/index" extends="base.admindefinition">
+	<definition name="imagedata/index" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/adimagedatas.jsp" />
 	</definition>
 	<definition name="imagedata/import" extends="base.admindefinition">

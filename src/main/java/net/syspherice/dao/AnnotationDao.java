@@ -3,7 +3,10 @@ package net.syspherice.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import net.syspherice.enumeration.AnnotationEnum;
+import net.syspherice.enumeration.ContactEnum;
 import net.syspherice.form.Annotation;
 import net.syspherice.utils.Common;
 
@@ -48,7 +51,7 @@ public class AnnotationDao  extends AbstractDAO {
 					.getBasicDBObjectUpdate(annotationUpdate);
 			BasicDBObject docOrigineQuery = new BasicDBObject();
 			docOrigineQuery.append(AnnotationEnum.AnnotationID.toString(),
-					annotationOrigine.getAnnotationID());
+					new ObjectId(annotationOrigine.getAnnotationID()));
 
 			int result = this.update(docOrigineQuery, docUpdate);
 			if (result > 0)
@@ -64,7 +67,7 @@ public class AnnotationDao  extends AbstractDAO {
 	public Boolean delete(String annotationID) {
 		try {
 			BasicDBObject query = new BasicDBObject();
-			query.append(Common.ConvertToString(AnnotationEnum.AnnotationID.toString(), ""),annotationID);
+			query.append(Common.ConvertToString(AnnotationEnum.AnnotationID.toString(), ""),new ObjectId(annotationID));
 			int result = (int) this.remove(query);
 			if(result>0)
 				return true;
@@ -80,9 +83,9 @@ public class AnnotationDao  extends AbstractDAO {
 		try {
 			
 			DBObject doc = new BasicDBObject(Common.ConvertToString(AnnotationEnum.AnnotationID.toString(), ""),
-					annotationID);
-			Annotation account = this.getAnnotation(this.getDbCollection().findOne(doc));
-			return account;
+					new ObjectId(annotationID));
+			Annotation annotation = this.getAnnotation(this.getDbCollection().findOne(doc));
+			return annotation;
 			} catch (Exception e) {
 			return null;
 		}
@@ -145,7 +148,9 @@ public class AnnotationDao  extends AbstractDAO {
 
 	public BasicDBObject getBasicDBObject(Annotation data) {
 		BasicDBObject doc = new BasicDBObject();
-		doc.put(AnnotationEnum.AnnotationID.toString(), data.getAnnotationID());
+		if(data.getAnnotationID()!=""){
+			doc.put(AnnotationEnum.AnnotationID.toString(), data.getAnnotationID());			
+		}
 		doc.put(AnnotationEnum.ObjectID.toString(), data.getObjectID());
 		doc.put(AnnotationEnum.DateCreate.toString(), data.getDateCreate());
 		doc.put(AnnotationEnum.DateModify.toString(), data.getDateModify());

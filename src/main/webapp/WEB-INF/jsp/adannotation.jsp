@@ -12,14 +12,15 @@
 	</div>
 </c:if>
 <c:if test="${!empty ulist.entities}">
-	<form:form class="custom-form" method="post"
+	<form:form method="post"
 		action='${pageContext.request.contextPath}/annotation'
 		commandName="annotation">
 		<h3>Annotation List</h3>
 			<table class="table-data">
 				<thead>
 					<tr>
-						<th>ObjectID</th>
+						<th>#</th>
+						<th>Object</th>
 						<th>Import User</th>
 						<th>Content</th>
 						<th>Date Create</th>
@@ -34,19 +35,19 @@
 						<c:set var="count" value="${count + 1}" scope="page" />
 						<tr>
 							<td><c:out value="${count}"></c:out></td>
-							<td><c:out value="${data.objectID}"></c:out></td>
-							<td><c:out value="${data.userImport}"></c:out></td>
+							<td><c:out value="${data.nameObject}"></c:out></td>
+							<td><c:out value="${data.userCreate}"></c:out></td>
 							<td><c:out value="${data.content}"></c:out></td>
 							<td><c:out value="${data.dateCreate}"></c:out></td>
-							<td><c:out value="${data.dataModify}"></c:out></td>
+							<td><c:out value="${data.dateModify}"></c:out></td>
 							<c:choose>
 								<c:when test="${data.state=='active'}">
 									<td><a
-										href="${pageContext.request.contextPath}/annotation/update/${data.username}">Active</a></td>
+										href="${pageContext.request.contextPath}/annotation/update/${data.annotationID}">Active</a></td>
 								</c:when>
 							<c:otherwise>
 									<td><a
-										href="${pageContext.request.contextPath}/annotation/update/${data.username}">Inactive</a></td>
+										href="${pageContext.request.contextPath}/annotation/update/${data.annotationID}">Inactive</a></td>
 								</c:otherwise>
 							</c:choose>
 							<td><a

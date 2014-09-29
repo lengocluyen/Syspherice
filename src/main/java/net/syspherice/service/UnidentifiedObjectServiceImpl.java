@@ -82,10 +82,32 @@ public class UnidentifiedObjectServiceImpl implements UnidentifiedObjectService 
 		Map<String, List<UnidentifiedObject>> result = new HashMap<String, List<UnidentifiedObject>>();
 
 		for (ItemTag i : itemTag) {
-			result.putAll(this.single(i.getCollectionName(),
-					i.getItemID()));
+			Map<String, List<UnidentifiedObject>> news = this.single(i.getCollectionName(),
+					i.getItemID());
+		 if(!existDataInSet(result,news ))
+			result.putAll(news);
+		 else
+		 {
+			 List<UnidentifiedObject> newsdata = new ArrayList<UnidentifiedObject>();
+			 newsdata.addAll(result.get(i.getCollectionName()));
+			 newsdata.addAll(news.get(i.getCollectionName()));
+			 Map<String, List<UnidentifiedObject>> addnewsdata = new HashMap<String, List<UnidentifiedObject>>();
+			 addnewsdata.put(i.getCollectionName(), newsdata);
+			 result.putAll(addnewsdata);
+		 }
 		}
 
 		return result;
+	}
+	public Boolean existDataInSet(Map<String, List<UnidentifiedObject>> data, Map<String, List<UnidentifiedObject>> news){
+		if(data.keySet().size()>0)
+		for(int i=0;i<data.keySet().size();i++){
+			if(data.keySet().toArray()[i].toString().compareTo(news.keySet().toArray()[0].toString())==0){
+				return true;
+			}
+			
+		}
+		return false;
+		
 	}
 }

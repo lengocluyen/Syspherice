@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,13 +28,16 @@ import net.syspherice.service.SearchTypeService;
 import net.syspherice.service.TagsService;
 import net.syspherice.service.UnidentifiedObjectService;
 import net.syspherice.utils.AbsoluteString;
+import net.syspherice.utils.Common;
 import net.syspherice.utils.Config;
 import net.syspherice.utils.ExcelsHandles;
 import net.syspherice.utils.MenuBuild;
 import net.syspherice.utils.SessionManage;
+import net.syspherice.utils.ZipUtils;
 import net.syspherice.validator.ContactValidator;
 import net.syspherice.validator.SearchInfoValidator;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -92,14 +96,9 @@ public class SearchController {
 			// handle result here
 			Map<String, List<UnidentifiedObject>> result = uObjectService
 					.findByField(searchInfo);
-			if (!result.isEmpty()) {
 				mv.addObject(AbsoluteString.searchresult, result);
 				sessionManage.setSearchInfo(searchInfo);
-			} else {
-				mv.addObject(AbsoluteString.searchresult, null);
-				sessionManage.setSearchInfo(null);
-			}
-			// UnidentifiedObject a = new UnidentifiedObject(
+		// UnidentifiedObject a = new UnidentifiedObject(
 
 		}
 		// set value display for view
@@ -190,7 +189,7 @@ public class SearchController {
 				.format(Calendar.getInstance().getTime());
 		String fileName = timeStamp + "_"
 				+ sessionManage.getAccount().getUsername() + ".xlsx";
-		String exportFileName = "/uploads/exports/" +fileName;
+		String exportFileName = "/uploads/exports/excels/" +fileName;
 		String phycialfile = session.getServletContext().getRealPath(
 				exportFileName);
 		if (sessionManage.getSearchInfo() != null) {
@@ -223,22 +222,42 @@ public class SearchController {
 		sessionManage = new SessionManage(session);
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(Calendar.getInstance().getTime());
-		String fileName = timeStamp + "_"
+		String zipfileName = timeStamp + "_"
 				+ sessionManage.getAccount().getUsername() + ".zip";
-		String exportFileName = "/uploads/exports/" +fileName;
-		String phycialfile = session.getServletContext().getRealPath(
+		String exportFileName = "/uploads/exports/zips/" +zipfileName;
+		
+		String phycialZipFile = session.getServletContext().getRealPath(
 				exportFileName);
+		String folderTemp = zipfileName.substring(0,zipfileName.length()-4);
+		
 		if (sessionManage.getSearchInfo() != null) {
 			Map<String, List<UnidentifiedObject>> result = uObjectService
 					.findByField(sessionManage.getSearchInfo());
 			if (!result.isEmpty()) {
-				ExcelsHandles excelhandles = new ExcelsHandles();
-				if (excelhandles.exportToXsl(result, phycialfile)) {
-					File fileReponse = new File(phycialfile);
-					response.setContentType("application/xlsx");
+				
+				List<String> plantID = Common.getListImageBySearchResult(result);
+				
+				List<ImageData> images = new ArrayList<ImageData>();
+				for(String pID: plantID){
+					images.addAll(imageDataService.findByPlantID(pID));
+				}
+				Common.copyImageToFolderTemp(images, folderTemp,session);
+				 ZipUtils appZip = new ZipUtils();
+				 appZip.setOutputZipFile(phycialZipFile);
+				 appZip.setSourceFolder(folderTemp);
+				 appZip.generateFileList(new File(folderTemp));
+				if(appZip.zipIt(phycialZipFile)){
+					try {
+						FileUtils.deleteDirectory(new File(folderTemp));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					File fileReponse = new File(phycialZipFile);
+					response.setContentType("application/zip");
 					response.setContentLength(new Long(fileReponse.length()).intValue());
 					response.setHeader("Content-Disposition",
-							"attachment; filename="+fileName);
+							"attachment; filename="+zipfileName);
 
 					try {
 						FileCopyUtils.copy(new FileInputStream(fileReponse),

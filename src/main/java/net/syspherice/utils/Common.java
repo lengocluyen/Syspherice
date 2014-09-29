@@ -15,12 +15,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.syspherice.form.SearchType;
+import javax.servlet.http.HttpSession;
 
+import net.syspherice.form.ImageData;
+import net.syspherice.form.SearchType;
+import net.syspherice.form.UnidentifiedObject;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,65 +40,145 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
+
 public class Common {
-	public static Boolean exportToZip(String zipfile, String folder){
-		try{
-		byte[] buffer = new byte[1024];
-		FileOutputStream fout = new FileOutputStream(zipfile);
-		ZipOutputStream zout= new ZipOutputStream(fout);
-		File dir = new File(folder);
-		if(dir.isDirectory()){
-			File[] files = dir.listFiles();
-			for(int i=0;i<files.length;i++){
-			FileInputStream fin = new FileInputStream(files[i]);
-			zout.putNextEntry(new ZipEntry(files[i].getName()));
-			int length;
-			while((length=fin.read(buffer))>0){
-				zout.write(buffer,0,length);
+	// write data to xls
+	public static List<String> getListImageBySearchResult(
+			Map<String, List<UnidentifiedObject>> data) {
+		List<String> result = new ArrayList();
+		try {
+			for (int i = 0; i < data.size(); i++) {
+				List<UnidentifiedObject> uObjects = data.get(data.keySet()
+						.toArray()[i]);
+				for (UnidentifiedObject uobj : uObjects) {
+					for (int j = 0; j < uobj.getData().size(); j++) {
+						if (uobj.getData().keySet().toArray()[j].toString()
+								.toUpperCase().compareTo("ID") == 0)
+							if (!findStringInList(
+									result,
+									uobj.getData()
+											.get(uobj.getData().keySet()
+													.toArray()[j]).toString()))
+								result.add(uobj
+										.getData()
+										.get(uobj.getData().keySet().toArray()[j])
+										.toString());
+					}
+				}
 			}
-			zout.closeEntry();
-			fin.close();
-			zout.close();
-			return true;
+		} catch (Exception e) {
+			return null;
+		}
+		return result;
+	}
+
+	public static Boolean findStringInList(List<String> list, String str) {
+		for (String s : list) {
+			if (s.compareTo(str) == 0) {
+				return true;
 			}
 		}
-		else {
-			zout.closeEntry();
-			zout.close();
+		return false;
+	}
+
+	public static File findFileInListForArray(File[] list, String str) {
+		if(list==null||list.length<1)
+			return null;
+		for (int i = 0; i < list.length; i++) {
+			if (list[i].getName().compareTo(str) == 0) {
+				return list[i];
+			}
+		}
+		return null;
+	}
+
+	public static Boolean copyImageToFolderTemp(List<ImageData> images,
+			String folderTemp, HttpSession session) {
+
+		File folderOrigine = new File(folderTemp);
+		if (!folderOrigine.exists())
+			folderOrigine.mkdirs();
+		try {
+			for (ImageData data : images) {
+				File img = new File(Config.ROOT_PATH	+ data.getUrl().substring(7, data.getUrl().length()));
+				File[] files = folderOrigine.listFiles();
+				File toFile = findFileInListForArray(files,
+						"G" + data.getPlantID());
+				if (toFile != null) {
+					if(toFile.isDirectory())
+						FileUtils.copyFileToDirectory(img, toFile);
+				} else {
+					File newFolder = new File(folderTemp + "/G"
+							+ data.getPlantID());
+					newFolder.mkdirs();
+					if(newFolder.isDirectory())
+					FileUtils.copyFileToDirectory(img, newFolder);
+				}
+			}
+		} catch (Exception e) {
 			return false;
-			}
 		}
-		catch(Exception e){
+		return true;
+	}
+
+	public static Boolean exportToZip(String zipfile, String folder) {
+		try {
+			byte[] buffer = new byte[1024];
+			FileOutputStream fout = new FileOutputStream(zipfile);
+			ZipOutputStream zout = new ZipOutputStream(fout);
+			File dir = new File(folder);
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				if (files != null && files.length > 0)
+					for (int i = 0; i < files.length; i++) {
+						FileInputStream fin = new FileInputStream(files[i]);
+						zout.putNextEntry(new ZipEntry(files[i].getName()));
+						int length;
+						while ((length = fin.read(buffer)) > 0) {
+							zout.write(buffer, 0, length);
+						}
+						zout.closeEntry();
+						fin.close();
+						zout.close();
+						return true;
+					}
+			} else {
+				zout.closeEntry();
+				zout.close();
+				return false;
+			}
+		} catch (Exception e) {
 			return false;
 		}
 		return false;
 	}
-	public static String exportSearchResultToPdf(String htmlContent,String author,String title ) {
-		Document document = new Document(
-				com.itextpdf.text.PageSize.A4);
+
+	public static String exportSearchResultToPdf(String htmlContent,
+			String author, String title) {
+		Document document = new Document(com.itextpdf.text.PageSize.A4);
 		String fileNameWithPath = Config.ROOT_PATH + "PDF-HtmlWorkerParsed.pdf";
-		
+
 		FileOutputStream fos;
 		try {
-			
-			fos = new FileOutputStream(fileNameWithPath);
-		
-		PdfWriter pdfWriter = PdfWriter.getInstance(document, fos);
-		document.open();
-		// **********************************************************
-		document.addAuthor(author);
-		document.addSubject(title);
-		document.addCreationDate();
-		document.addTitle(title);
-		// **********************************************************/
 
-		HTMLWorker htmlWorker = new HTMLWorker(document);
-		htmlWorker.parse(new StringReader(htmlContent.toString()));
-		
-		document.close();
-		fos.close();
+			fos = new FileOutputStream(fileNameWithPath);
+
+			PdfWriter pdfWriter = PdfWriter.getInstance(document, fos);
+			document.open();
+			// **********************************************************
+			document.addAuthor(author);
+			document.addSubject(title);
+			document.addCreationDate();
+			document.addTitle(title);
+			// **********************************************************/
+
+			HTMLWorker htmlWorker = new HTMLWorker(document);
+			htmlWorker.parse(new StringReader(htmlContent.toString()));
+
+			document.close();
+			fos.close();
 		} catch (FileNotFoundException e) {
-			
+
 			return "";
 		} catch (DocumentException e) {
 			return "";

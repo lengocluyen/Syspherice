@@ -1,7 +1,7 @@
 package net.syspherice.enumeration;
 
 public enum AnnotationEnum {
-	AnnotationID("AnnotationID"),
+	AnnotationID("_id"),
 	ObjectID("ObjectID"),
 	DateCreate("DateCreate"),
 	DateModify("DateModify"),

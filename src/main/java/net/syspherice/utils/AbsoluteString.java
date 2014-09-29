@@ -7,6 +7,8 @@ public class AbsoluteString {
 	public static final String account = "account";
 	public static final String noticesuccess = "noticesuccess";
 	public static final String noticefail = "noticefail";
+	public static final String noticesuccess1 = "noticesuccess1";
+	public static final String noticefail1 = "noticefail1";
 	public static final String menu = "menu";
 	public static final String adminmenu = "adminmenu";
 	public static final String ulist = "ulist";
@@ -38,5 +40,8 @@ public class AbsoluteString {
 	public static final String tags= "tags";
 	public static final String itemtags = "itemtags";
 	public static final String annotation = "annotation";
+	public static final String plantname="plantname";
+	public static final String imageobject="imageobject";
+	public static final String annotationinfo="annotationinfo";
 	
 }

@@ -32,47 +32,67 @@
 							<div class="tab-pane fade in ${active1}" id="section-1">
 								<c:forEach items="${uobject}" var="result">
 									<h3>${result.key }</h3>
-									<table class="table-data">
-										<thead>
-											<tr>
-												<c:forEach items="${result.value[0].data}" var="data">
-													<c:if test="${data.key!='_id'&&data.key!='textDataDocID'}">
-														<td><c:out value="${data.key}"></c:out></td>
-													</c:if>
-												</c:forEach>
-											</tr>
-										</thead>
-										<tbody>
-											<c:forEach items="${result.value}" var="uObject">
+									<div style="overflow: auto;">
+										<table class="table-data">
+											<thead>
 												<tr>
-													<c:forEach items="${uObject.data}" var="data">
+													<c:forEach items="${result.value[0].data}" var="data">
 														<c:if test="${data.key!='_id'&&data.key!='textDataDocID'}">
-															<td><c:out value="${data.value}"></c:out></td>
+															<td><c:out value="${data.key}"></c:out></td>
 														</c:if>
 													</c:forEach>
 												</tr>
-											</c:forEach>
-										</tbody>
-									</table>
+											</thead>
+											<tbody>
+												<c:forEach items="${result.value}" var="uObject">
+													<tr>
+														<c:forEach items="${uObject.data}" var="data">
+															<c:if
+																test="${data.key!='_id'&&data.key!='textDataDocID'}">
+																<td><c:out value="${data.value}"></c:out></td>
+															</c:if>
+														</c:forEach>
+													</tr>
+												</c:forEach>
+											</tbody>
+										</table>
+									</div>
 								</c:forEach>
 							</div>
-							<div class="tab-pane fade in ${active2}" id="section-2">
-								<div class="row">
-									<div class="gallery-small-thumbs clearfix">
+							<div class="tab-pane fade in ${active2}" id="section-2"   style="margin-top:0px;padding-top:3px;">
+								<div class="row"  style="margin-top:0px;">
+									<div class="gallery-small-thumbs clearfix"  style="margin-top:0px;">
+										<div id="Grid" style="margin-top:0px;margin-left:10px;">
+											<c:forEach items="${imagedata}" var="data">
+												<div class="col-md-4 mix students mix_all" data-cat="3"
+													style="display: inline-block; opacity: 1;">
 
-										<c:forEach items="${imagedata}" var="data">
-											<div class="thumb-small-gallery closed" style="opacity: 1;">
-												<a class="fancybox" rel="gallery1"
-													href="${pageContext.request.contextPath}/${data.url}"
-													title="Gallery Tittle One"> <img
-													src="${pageContext.request.contextPath}/${data.url}"
-													width="200px" alt=""> <img width="120px"
-													src="${pageContext.request.contextPath}/${data.url}" alt="" />
-												</a>
-											</div>
-										</c:forEach>
+													<div class="gallery-item" style="margin-top:15px;">
+														<a class="fancybox" rel="gallery1"
+															href="${pageContext.request.contextPath}/${data.url}">
+															<div class="gallery-thumb">
+																<img
+																	src="${pageContext.request.contextPath}/${data.url}"
+																	alt="">
+															</div>
+															<div class="gallery-content">
+																<p class="small-text">
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sowing number: ${data.sowing_nb} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Repet number: ${data.repet_nb}</p>
+																<p class="small-text"> 
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plant number: ${data.plant_nb} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Panicle number: ${data.panicle_nb}</p>											
+															</div>
+														</a>
+														<input class="mainBtn" type="button" style="width:100%;align:center;"
+															value="Image annotation"
+										onclick="window.location.href='${pageContext.request.contextPath}/annotation/add/${data.imageID}';">
+													</div>
+												</div>
 
+											</c:forEach>
 
+										</div>
 									</div>
 								</div>
 

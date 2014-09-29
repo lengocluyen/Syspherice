@@ -120,7 +120,7 @@
 			<div class="widget-main">
 				<div class="widget-inner shortcode-typo">
 					<div class="course-search" style="min-height: 408px">
-						<h3 style="margin-bottom: 0px;">Results</h3>
+						<h3 style="margin-bottom: 0px;padding-bottom:15px;"><strong>Results</strong></h3>
 						<form:form id="quick_form" class="course-search-form"
 							style="margin-top:0px;" method="post"
 							action='${pageContext.request.contextPath}/search/result'
@@ -138,13 +138,14 @@
 													});
 										});
 							</script>
-							<c:if test="${!empty searchresult}">
-								<c:forEach items="${searchresult}" var="result">
-									<h3>
-										Collection: <span class="titlecollection">${result.key }</span>
-									</h3>
-									<div style="overflow: auto;">
-
+							<c:forEach items="${searchresult}" var="result">
+								<h3>
+									Collection: <span class="titlecollection">${result.key }</span>
+								</h3>
+								<div style="overflow: auto;">
+									<c:set var="count" value="0" scope="page" />
+									<c:if test="${!empty result.value}">
+									<c:set var="count" value="${count + 1}" scope="page" />
 										<table class="table-data">
 											<thead>
 												<tr>
@@ -176,21 +177,30 @@
 												</c:forEach>
 											</tbody>
 										</table>
-									</div>
-								</c:forEach>
-								<!-- Export  -->
-								<c:if test="${!empty sessionScope.Account}">
-									<center>
-										<input class="mainBtn" style="margin-left: 0px"
-											style="align:center;" type="button" name=""
-											value="Export this results to excel"
-											onclick="window.open('${pageContext.request.contextPath}/search/exporttoexcel');">
-										<input class="mainBtn" style="margin-left: 0px"
-											style="align:center;" type="button" name=""
-											value="Export this resuls to zip file"
-											onclick="window.location.href='${pageContext.request.contextPath}/search/exporttozip';">
-									</center>
-								</c:if>
+									</c:if>
+									<c:if test="${empty result.value}">
+									<div class="col-md-12">
+										<div class="alert alert-information">
+											<strong>No data found!</strong>
+										</div>
+										</div>
+									</c:if>
+								</div>
+							</c:forEach>
+							<!-- Export  -->
+							<c:if test="${count > 0}">
+							<c:if test="${!empty sessionScope.Account}">
+								<center>
+									<input class="mainBtn" style="margin-left: 0px"
+										style="align:center;" type="button" name=""
+										value="Export this results to excel"
+										onclick="window.open('${pageContext.request.contextPath}/search/exporttoexcel');">
+									<input class="mainBtn" style="margin-left: 0px"
+										style="align:center;" type="button" name=""
+										value="Export this resuls to zip file"
+										onclick="window.location.href='${pageContext.request.contextPath}/search/exporttozip';">
+								</center>
+							</c:if>
 							</c:if>
 						</form:form>
 					</div>
