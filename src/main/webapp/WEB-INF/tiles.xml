@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="base.definition" template="/WEB-INF/tiles/layout.jsp">
+		<put-attribute name="title" value="Rice phenotype database" />
+		<put-attribute name="menudevices" value="/WEB-INF/tiles/menudevices.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/tiles/menu.jsp" />
+		<put-attribute name="slideshow" value="/WEB-INF/tiles/slideshow.jsp" />
+		<put-attribute name="boxinfo" value="/WEB-INF/tiles/boxinfo.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="leftbox" value="/WEB-INF/tiles/leftbox.jsp" />
+		<put-attribute name="gallery" value="/WEB-INF/tiles/gallery.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="accueil" extends="base.definition">
+		<put-attribute name="body" value="/WEB-INF/jsp/content.jsp" />
+	</definition>
+	
+	<definition name="base.login" template="/WEB-INF/tiles/layoutlogin.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="content" value="" />
+	
+	</definition>
+	<definition name="documentobjet" extends="base.login">
+		<put-attribute name="content" value="/WEB-INF/jsp/documentobjet.jsp" />
+	</definition>
+	
+	<!-- Part of seconde layout for normal user -->
+	<definition name="base.detail" template="/WEB-INF/tiles/detaillayout.jsp">
+		<put-attribute name="title" value="Rice data in Vietnam" />
+		<put-attribute name="menudevices" value="/WEB-INF/tiles/menudevices.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/tiles/menu.jsp" />
+		<put-attribute name="adminpath" value="/WEB-INF/tiles/adminpath.jsp" />
+		<put-attribute name="content" value="" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
+	</definition>
+	
+	
+	<definition name="login" extends="base.detail">
+		<put-attribute name="body" value="/WEB-INF/jsp/content.jsp" />
+	</definition>
+	
+	<definition name="registration" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/registration.jsp" />
+	</definition>
+	<definition name="contactpage" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/contact.jsp" />
+	</definition>
+	<definition name="introduction" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/introduction.jsp" />
+	</definition>
+	<definition name="searchpage" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/searchpage.jsp" />
+	</definition>
+	
+	<definition name="searchresult" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/searchresult.jsp" />
+	</definition>
+	<definition name="viewdetail" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/viewdetail.jsp" />
+	</definition>
+	<definition name="annotation/add" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
+	</definition>
+	<definition name="annotation/del" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
+	</definition>
+	<definition name="tagsview" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/viewtagsdetail.jsp" />
+	</definition>
+	<definition name="account/detail" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/accountdetail.jsp" />
+	</definition>
+	
+	<!-- Part of administration -->
+	<definition name="base.admindefinition" template="/WEB-INF/tiles/adminlayout.jsp">
+		<put-attribute name="title" value="Rice data in Vietnam" />
+		<put-attribute name="menudevices" value="/WEB-INF/tiles/menudevices.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+		
+		<put-attribute name="admenu" value="/WEB-INF/tiles/admenu.jsp" />
+		<put-attribute name="adminpath" value="/WEB-INF/tiles/adminpath.jsp" />
+		<put-attribute name="content" value="" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
+	</definition>
+	<definition name="admin/adaccueil" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adaccueil.jsp" />
+	</definition>
+	<definition name="import/data" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adimportdata.jsp" />
+	</definition>
+	<definition name="import/dataid" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adimportdata.jsp" />
+	</definition>
+	
+	<definition name="exceldatadoc/create" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adexceldatadoccreate.jsp" />
+	</definition>
+	<definition name="exceldatadoc/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adexceldatadocs.jsp" />
+	</definition>
+	<definition name="exceldatadoc/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adexceldatadocupdate.jsp" />
+	</definition>
+	
+	<definition name="searchtype/create" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adsearchtypecreate.jsp" />
+	</definition>
+	<definition name="searchtype/chooseproject" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adsearchtypechooseproject.jsp" />
+	</definition>
+	<definition name="searchtype/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adsearchtypes.jsp" />
+	</definition>
+	<definition name="searchtype/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adsearchtypeupdate.jsp" />
+	</definition>
+	
+	<definition name="tags/create" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adtagscreate.jsp" />
+	</definition>
+	<definition name="tags/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adtags.jsp" />
+	</definition>
+	<definition name="tags/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adtagscreate.jsp" />
+	</definition>
+	<definition name="imagedata/index" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/adimagedatas.jsp" />
+	</definition>
+	<definition name="imagedata/import" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adimagedataimport.jsp" />
+	</definition>
+	<definition name="admin/adintroduction" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adintroduction.jsp" />
+	</definition>
+	<definition name="contact/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adcontact.jsp" />
+	</definition>
+	<definition name="contact/delete" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adcontact.jsp" />
+	</definition>
+	<definition name="contact/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adcontact.jsp" />
+	</definition>
+	<definition name="account/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adaccount.jsp" />
+	</definition>
+	<definition name="account/delete" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adaccount.jsp" />
+	</definition>
+	<definition name="account/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adaccount.jsp" />
+	</definition>
+	
+	<definition name="annotation/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	<definition name="annotation/delete" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	<definition name="annotation/update" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
+	</definition>
+	
+	<definition name="filemanage" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/filemanage.jsp" />
+	</definition>
+	
+	<definition name="base.finder" template="/WEB-INF/tiles/importfinder.jsp">
+		
+	</definition>
+	<definition name="admin/importfinder" extends="base.finder">
+	</definition>
+	
+	<definition name="connector" extends="base.finder">
+	</definition>
+	<definition name="thumbnailer" extends="base.finder">
+	</definition>
+	<definition name="virtualproxy" extends="base.finder">
+	</definition>
+</tiles-definitions>

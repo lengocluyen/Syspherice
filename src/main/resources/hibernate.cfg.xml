@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+ 
+<hibernate-configuration>
+    <session-factory>
+        <!--<mapping class="net.covoiturage.covoso.form.Utilisateur" />
+        <mapping class="net.covoiturage.covoso.form.Compte" />
+        <mapping class="net.covoiturage.covoso.form.Voiture" />
+        <mapping class="net.covoiturage.covoso.form.Annonce" />
+        <mapping class="net.covoiturage.covoso.form.Inscription" />
+        <mapping class="net.covoiturage.covoso.form.Ville" />-->
+    </session-factory>
+         
+</hibernate-configuration>
