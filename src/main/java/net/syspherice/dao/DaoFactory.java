@@ -2,14 +2,14 @@ package net.syspherice.dao;
 
 import java.util.List;
 
-import com.drew.metadata.Tag;
 import com.mongodb.DBCollection;
 
 import net.syspherice.form.Account;
 import net.syspherice.form.Annotation;
+import net.syspherice.form.BinImageData;
+import net.syspherice.form.BinXmlData;
 import net.syspherice.form.Contact;
 import net.syspherice.form.ExcelDataDoc;
-import net.syspherice.form.ImageData;
 import net.syspherice.form.ItemTag;
 import net.syspherice.form.SearchType;
 import net.syspherice.form.Tags;
@@ -29,9 +29,14 @@ public class DaoFactory {
 	public static List<String> getAllCollections(){
 		return MongoDBUtil.getAllCollections();
 	} 
-	public static ImageDataDao getImageDataDao(){
-		return (ImageDataDao) getDAOByClassAndName(ImageDataDao.class, ImageData.class.getSimpleName());
+	public static BinImageDataDao getBinImageDataDao(){
+		return (BinImageDataDao) getDAOByClassAndName(BinImageDataDao.class, BinImageData.class.getSimpleName());
 	}
+	
+	public static BinXmlDataDao getBinXmlDataDao(){
+		return (BinXmlDataDao) getDAOByClassAndName(BinXmlDataDao.class, BinXmlData.class.getSimpleName());
+	}
+	
 	public static FileObjectDao getFileObjectDao(String nameCollection){
 		return (FileObjectDao) getDAOByClassAndName(FileObjectDao.class, nameCollection);
 	}

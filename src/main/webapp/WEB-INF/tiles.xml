@@ -66,6 +66,14 @@
 	<definition name="annotation/add" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
 	</definition>
+	
+	<definition name="annotation/addx" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/addannotationxml.jsp" />
+	</definition>
+	
+	
+	
+	
 	<definition name="annotation/del" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/addannotation.jsp" />
 	</definition>
@@ -74,6 +82,10 @@
 	</definition>
 	<definition name="account/detail" extends="base.detail">
 		<put-attribute name="content" value="/WEB-INF/jsp/accountdetail.jsp" />
+	</definition>
+	
+	<definition name="demo/connection" extends="base.detail">
+		<put-attribute name="content" value="/WEB-INF/jsp/alleconnection.jsp" />
 	</definition>
 	
 	<!-- Part of administration -->
@@ -129,12 +141,27 @@
 	<definition name="tags/update" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adtagscreate.jsp" />
 	</definition>
-	<definition name="imagedata/index" extends="base.detail">
+	<definition name="imagedata/index" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adimagedatas.jsp" />
 	</definition>
 	<definition name="imagedata/import" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adimagedataimport.jsp" />
 	</definition>
+	
+	<definition name="binimagedata/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adbinimagedata.jsp" />
+	</definition>
+	<definition name="binimagedata/import" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adbinimagedataimport.jsp" />
+	</definition>
+	
+	<definition name="binxmldata/index" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adbinxmldata.jsp" />
+	</definition>
+	<definition name="binxmldata/import" extends="base.admindefinition">
+		<put-attribute name="content" value="/WEB-INF/jsp/adbinxmldataimport.jsp" />
+	</definition>
+	
 	<definition name="admin/adintroduction" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adintroduction.jsp" />
 	</definition>
@@ -166,6 +193,7 @@
 	<definition name="annotation/update" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/adannotation.jsp" />
 	</definition>
+	
 	
 	<definition name="filemanage" extends="base.admindefinition">
 		<put-attribute name="content" value="/WEB-INF/jsp/filemanage.jsp" />

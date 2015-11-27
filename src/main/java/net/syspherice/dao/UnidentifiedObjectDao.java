@@ -40,31 +40,34 @@ public class UnidentifiedObjectDao extends AbstractDAO {
 
 	public UnidentifiedObject convertDBObjectToUnidentifiedObject(DBObject obj) {
 		UnidentifiedObject result = new UnidentifiedObject();
-		result.setDocId(Common.ConvertToString(obj.get(UnidentifiedObjectEnum.DocID.toString()),""));
-		
-		result.setTextDataDocID(Common.ConvertToString(obj.get(
-				UnidentifiedObjectEnum.textDataDocID.toString()),""));
+		result.setDocId(Common.ConvertToString(
+				obj.get(UnidentifiedObjectEnum.DocID.toString()), ""));
+
+		result.setTextDataDocID(Common.ConvertToString(
+				obj.get(UnidentifiedObjectEnum.textDataDocID.toString()), ""));
 		obj.toMap().remove(
 				obj.get(UnidentifiedObjectEnum.DocID.toString()).toString());
-		if(obj.get(UnidentifiedObjectEnum.textDataDocID.toString())!=null)
+		if (obj.get(UnidentifiedObjectEnum.textDataDocID.toString()) != null)
 			obj.toMap().remove(
-				obj.get(UnidentifiedObjectEnum.textDataDocID.toString())
-						.toString());
+					obj.get(UnidentifiedObjectEnum.textDataDocID.toString())
+							.toString());
 		result.setData(obj.toMap());
 		return result;
 
 	}
-	public Map<String, List<UnidentifiedObject>> singlebyID(String collectioname,String ID) {
+
+	public Map<String, List<UnidentifiedObject>> singlebyID(
+			String collectioname, String ID) {
 		Map<String, List<UnidentifiedObject>> result = new HashMap<String, List<UnidentifiedObject>>();
 		DBObject doc = new BasicDBObject(Common.ConvertToString(
 				UnidentifiedObjectEnum.DocID.toString(), ""), new ObjectId(ID));
-		List<UnidentifiedObject> data= new ArrayList<UnidentifiedObject>();
-		data.add(this.convertDBObjectToUnidentifiedObject(this.getDbCollection()
-				.findOne(doc)));
-			result.put(collectioname, data);
+		List<UnidentifiedObject> data = new ArrayList<UnidentifiedObject>();
+		data.add(this.convertDBObjectToUnidentifiedObject(this
+				.getDbCollection().findOne(doc)));
+		result.put(collectioname, data);
 		return result;
 	}
-	
+
 	// Very Important
 	public int insert(ExcelDataDoc excelData, SheetInfo info,
 			SheetDataRow title, List<SheetDataRow> datas) {
@@ -88,7 +91,9 @@ public class UnidentifiedObjectDao extends AbstractDAO {
 				i++;
 			}
 			if (this.single(id) == null) {
-				this.getDbCollection().ensureIndex(new BasicDBObject(info.getColonneIndex()[0], 1), new BasicDBObject("unique", true));
+				this.getDbCollection().ensureIndex(
+						new BasicDBObject(info.getColonneIndex()[0], 1),
+						new BasicDBObject("unique", true));
 				this.insert(doc);
 				count++;
 			}
@@ -150,13 +155,66 @@ public class UnidentifiedObjectDao extends AbstractDAO {
 		return result;
 	}
 
+	public Map<String, List<UnidentifiedObject>> findbyFieldWithCombination(
+			String name, SearchType searchType) {
+		Map<String, List<UnidentifiedObject>> result = new HashMap<String, List<UnidentifiedObject>>();
+		for (FieldCollection fieldCollection : searchType
+				.getFieldOfCollections()) {
+			BasicDBObject query = new BasicDBObject();
+
+			query.put(fieldCollection.getField(), java.util.regex.Pattern
+					.compile(Common.regexForSearchUnicode(name)));
+			DBCursor cursor = DaoFactory.getCollection(
+					fieldCollection.getCollection()).find(query);
+			List<UnidentifiedObject> collections = new ArrayList<UnidentifiedObject>();
+			try {
+				while (cursor.hasNext()) {
+					collections
+							.add(this
+									.convertDBObjectToUnidentifiedObject(cursor
+											.next()));
+				}
+			} finally {
+				cursor.close();
+			}
+			result.put(fieldCollection.getCollection(), collections);
+		}
+		return result;
+	}
+
 	public Map<String, List<UnidentifiedObject>> findbyField(String name,
 			SearchType searchType) {
 		Map<String, List<UnidentifiedObject>> result = new HashMap<String, List<UnidentifiedObject>>();
 		for (FieldCollection fieldCollection : searchType
 				.getFieldOfCollections()) {
 			BasicDBObject query = new BasicDBObject();
-			query.put(fieldCollection.getField(), java.util.regex.Pattern.compile(Common.regexForSearchUnicode(name)));
+			List<String> names = Common.CutWithAnd(name);
+			if (name.indexOf(">") > -1 || name.indexOf(">=") > -1
+					|| name.indexOf("<") > -1 || name.indexOf("<=") > -1
+					|| name.indexOf("=") > -1) {
+				String newvalue = Common.CutWithInterval(
+						fieldCollection.getField(), name);
+				query.put("$where", newvalue);
+			} else // autre cas
+			{
+				if (names.size() > 1) {
+					// cas interval
+
+					BasicDBList or = new BasicDBList();
+
+					for (String n : names) {
+						DBObject dbo;
+						dbo = new BasicDBObject(fieldCollection.getField(),
+								Common.regexForSearchUnicode(n));
+						or.add(dbo);
+					}
+					query = new BasicDBObject("$or", or);
+				} else {
+					query.put(fieldCollection.getField(),
+							java.util.regex.Pattern.compile(Common
+									.regexForSearchUnicode(name)));
+				}
+			}
 			DBCursor cursor = DaoFactory.getCollection(
 					fieldCollection.getCollection()).find(query);
 			List<UnidentifiedObject> collections = new ArrayList<UnidentifiedObject>();

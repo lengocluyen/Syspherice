@@ -1,5 +1,6 @@
 package net.syspherice.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -9,12 +10,12 @@ import javax.servlet.http.HttpSession;
 import net.syspherice.form.Account;
 import net.syspherice.form.Annotation;
 import net.syspherice.form.AnnotationInfo;
-import net.syspherice.form.ImageData;
-import net.syspherice.form.ItemTag;
-import net.syspherice.form.Login;
+import net.syspherice.form.BinImageData;
+import net.syspherice.form.BinXmlData;
 import net.syspherice.service.AccountService;
 import net.syspherice.service.AnnotationService;
-import net.syspherice.service.ImageDataService;
+import net.syspherice.service.BinImageDataService;
+import net.syspherice.service.BinXmlDataService;
 import net.syspherice.utils.AbsoluteString;
 import net.syspherice.utils.Common;
 import net.syspherice.utils.MenuBuild;
@@ -36,7 +37,9 @@ public class AnnotationController {
 	@Autowired
 	private AnnotationService annotationService;
 	@Autowired
-	private ImageDataService imageDataService;
+	private BinImageDataService imageDataService;
+	@Autowired
+	private BinXmlDataService xmlDataService;
 	@Autowired
 	private AccountService accountService;
 	private SessionManage sessionManage;
@@ -85,7 +88,7 @@ public class AnnotationController {
 			return new ModelAndView("redirect:/");
 		}
 		ModelAndView mv = new ModelAndView("annotation/add");
-		ImageData imageData = imageDataService.single(imageID);
+		BinImageData imageData = imageDataService.single(imageID);
 		
 		Annotation annotation = new Annotation();
 		annotation.setObjectID(imageID);
@@ -127,7 +130,7 @@ public class AnnotationController {
 				return new ModelAndView("redirect:/");
 			}
 		ModelAndView mv = new ModelAndView("annotation/add");
-		ImageData imageData = imageDataService.single(imageID);
+		BinImageData imageData = imageDataService.single(imageID);
 		
 		if(annotation.getContent().length()>0){
 			annotation.setUserCreate(sessionManage.getAccount().getUsername());
@@ -308,4 +311,110 @@ public class AnnotationController {
 				MenuBuild.getMenu("annotation", session));
 		return mv;
 	}
+	
+	@RequestMapping("/addx/{xmlID}")
+	public ModelAndView getAddNewAnnotationXml(@PathVariable("xmlID") String xmlID,
+			HttpSession session){
+		sessionManage = new SessionManage(session);
+		if (sessionManage.getAccount()==null) {
+			return new ModelAndView("redirect:/");
+		}
+		
+		
+		ModelAndView mv = new ModelAndView("annotation/addx");
+		BinXmlData imageData = xmlDataService.single(xmlID);
+		
+		Annotation annotation = new Annotation();
+		annotation.setObjectID(xmlID);
+		annotation.setUserCreate(sessionManage.getAccount().getUsername());
+		mv.addObject(AbsoluteString.annotation, annotation);
+		
+		//get annotationinfo
+		List<Annotation> annotations = annotationService.findbyObjectID(xmlID);
+		List<AnnotationInfo> annotationInfos = new ArrayList<AnnotationInfo>();
+		for(Annotation an:annotations){
+			AnnotationInfo ai = new AnnotationInfo();
+			Account ac = accountService.single(an.getUserCreate());
+			ai.setAvatar(ac.getAvatar());
+			ai.setAnnotationid(an.getAnnotationID());
+			ai.setFullname(ac.getFirstName() + " " + ac.getLastName());
+			ai.setContent(an.getContent());
+			ai.setCreatedate(an.getDateCreate());
+			if(ac.getUsername().compareTo(sessionManage.getAccount().getUsername())==0)
+				ai.setAuthor(true);
+			else
+				ai.setAuthor(false);
+			ai.setUsername(an.getUserCreate());
+			annotationInfos.add(ai);
+		}
+		
+		mv.addObject(AbsoluteString.annotationinfo, annotationInfos);
+		mv.addObject(AbsoluteString.imageobject, imageData);
+		mv.addObject(AbsoluteString.menu,
+				MenuBuild.getMenu("Xml Annotation", session));
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/addx/{xmlID}", method = RequestMethod.POST)
+	public ModelAndView postAddNewAnnotationXml(@ModelAttribute("annotation") Annotation annotation,@PathVariable("xmlID") String xmlID,
+			HttpSession session){
+		sessionManage = new SessionManage(session);
+			if (sessionManage.getAccount()==null) {
+				return new ModelAndView("redirect:/");
+			}
+		ModelAndView mv = new ModelAndView("annotation/addx");
+		BinXmlData xmlData = xmlDataService.single(xmlID);
+		
+		if(annotation.getContent().length()>0){
+			annotation.setUserCreate(sessionManage.getAccount().getUsername());
+			annotation.setObjectID(xmlID);
+			annotation.setDateCreate(Common.getSimpleDateFormat(Calendar
+					.getInstance().getTime()));
+			annotation.setDateModify(Common.getSimpleDateFormat(Calendar
+							.getInstance().getTime()));
+			annotation.setState("active");
+			if(!annotationService.add(annotation))
+			mv.addObject(AbsoluteString.noticefail,null);
+			else
+			mv.addObject(AbsoluteString.noticesuccess, true);
+		}
+		else{
+			mv.addObject(AbsoluteString.noticefail,true);
+			mv.addObject(AbsoluteString.noticesuccess, null);
+		}
+		
+		mv.addObject(AbsoluteString.annotation, annotation);
+		//mv.addObject(AbsoluteString.tags, tagService.all());
+		//mv.addObject(AbsoluteString.itemtags, new ItemTag());
+		//mv.addObject(AbsoluteString.uobject, uObject);
+		//mv.addObject(AbsoluteString.imagedata, result);
+		
+		
+		//get annotationinfo
+		List<Annotation> annotations = annotationService.findbyObjectID(xmlID);
+		List<AnnotationInfo> annotationInfos = new ArrayList<AnnotationInfo>();
+		for(Annotation an:annotations){
+			AnnotationInfo ai = new AnnotationInfo();
+			Account ac = accountService.single(an.getUserCreate());
+			ai.setAvatar(ac.getAvatar());
+			ai.setAnnotationid(an.getAnnotationID());
+			ai.setFullname(ac.getFirstName() + " " + ac.getLastName());
+			ai.setContent(an.getContent());
+			ai.setCreatedate(an.getDateCreate());
+			if(ac.getUsername().compareTo(sessionManage.getAccount().getUsername())==0)
+				ai.setAuthor(true);
+			else
+				ai.setAuthor(false);
+			ai.setUsername(an.getUserCreate());
+			annotationInfos.add(ai);
+		}
+		
+		mv.addObject(AbsoluteString.annotationinfo, annotationInfos);
+		mv.addObject(AbsoluteString.imageobject, xmlData);
+		mv.addObject(AbsoluteString.menu,
+				MenuBuild.getMenu("Xml Annotation", session));
+		return mv;
+	}
+	
 }

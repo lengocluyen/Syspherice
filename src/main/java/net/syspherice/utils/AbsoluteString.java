@@ -44,4 +44,6 @@ public class AbsoluteString {
 	public static final String imageobject="imageobject";
 	public static final String annotationinfo="annotationinfo";
 	
+	public static final String xmldata="xmlcontentdata";
+	
 }

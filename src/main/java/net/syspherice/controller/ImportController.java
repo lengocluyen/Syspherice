@@ -82,9 +82,10 @@ public class ImportController {
 		
 		sessionManage = new SessionManage(session);
 		ModelAndView mv = new ModelAndView("import/data");
-		String filename = sheetinfo.getPath().substring(11,
+		String filename = sheetinfo.getPath().substring(19,
 				sheetinfo.getPath().length());
-		String phycialfile = session.getServletContext().getRealPath(filename);
+		//String phycialfile = session.getServletContext().getRealPath(filename);
+		String phycialfile = Config.ROOT_PATH + filename;
 		ExcelsHandles exlhandle = new ExcelsHandles();
 		exlhandle.setFilename(phycialfile);
 		List<SheetInfo> sheets = exlhandle.ReadFile();

@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 
 import net.syspherice.dao.AccountDao;
 import net.syspherice.dao.AnnotationDao;
+import net.syspherice.dao.BinImageDataDao;
 import net.syspherice.dao.DaoFactory;
-import net.syspherice.dao.ImageDataDao;
 import net.syspherice.form.Account;
 import net.syspherice.form.Annotation;
-import net.syspherice.form.ImageData;
+import net.syspherice.form.BinImageData;
 
 @Service
 public class AnnotationServiceImpl implements AnnotationService {
 	private AnnotationDao annotationDao;
 
-	private ImageDataDao imageDataDao;
+	private BinImageDataDao imageDataDao;
 
 	public AnnotationServiceImpl() {
 		annotationDao = DaoFactory.getAnnotationDao();
@@ -52,12 +52,12 @@ public class AnnotationServiceImpl implements AnnotationService {
 	}
 
 	public List<Annotation> paging(int page, int pagesize) {
-		imageDataDao = DaoFactory.getImageDataDao();
+		imageDataDao = DaoFactory.getBinImageDataDao();
 		List<Annotation> data = annotationDao.paging(page, pagesize);
 		try {
 			List<Annotation> result = new ArrayList<Annotation>();
 			for (Annotation an : data) {
-				ImageData id = imageDataDao.single(an.getObjectID());
+				BinImageData id = imageDataDao.single(an.getObjectID());
 				an.setNameObject(id.getName());
 				result.add(an);
 			}

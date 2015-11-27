@@ -27,7 +27,7 @@
 		<div class="icon">
 			<a href="${pageContext.request.contextPath}/searchtype/index"><img
 				id="item01"
-				src='<c:url value="/resources/images/icons/screen-sonic.png"/>'
+				src='<c:url value="/resources/images/icons/x-js-com_resource.png"/>'
 				style="border-width: 0px;"> <span class="title">Type search</span>
 			</a>
 		</div>

@@ -13,16 +13,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.syspherice.form.BinImageData;
 import net.syspherice.form.Contact;
 import net.syspherice.form.ExcelDataDoc;
-import net.syspherice.form.ImageData;
 import net.syspherice.form.ItemTag;
 import net.syspherice.form.SearchInfo;
 import net.syspherice.form.SearchType;
 import net.syspherice.form.UnidentifiedObject;
 import net.syspherice.service.AccountService;
+import net.syspherice.service.BinImageDataService;
 import net.syspherice.service.ExcelDataDocService;
-import net.syspherice.service.ImageDataService;
 import net.syspherice.service.ItemtagService;
 import net.syspherice.service.SearchTypeService;
 import net.syspherice.service.TagsService;
@@ -65,7 +65,7 @@ public class SearchController {
 	@Autowired
 	private UnidentifiedObjectService uObjectService;
 	@Autowired
-	private ImageDataService imageDataService;
+	private BinImageDataService imageDataService;
 	@Autowired
 	private ItemtagService itemTagService;
 	@Autowired
@@ -122,7 +122,7 @@ public class SearchController {
 		Map<String, List<UnidentifiedObject>> uObject = uObjectService.single(
 				collectionname, collectionid);
 
-		List<ImageData> result = imageDataService.findByPlantID(uObject
+		List<BinImageData> result = imageDataService.findByPlantID(uObject
 				.get(collectionname).get(0).getData().get("ID").toString());
 
 		mv.addObject(AbsoluteString.tags, tagService.all());
@@ -145,7 +145,7 @@ public class SearchController {
 				sessionManage.getCollectionName(),
 				sessionManage.getCollectionID());
 
-		List<ImageData> images = imageDataService.findByPlantID(uObject
+		List<BinImageData> images = imageDataService.findByPlantID(uObject
 				.get(sessionManage.getCollectionName()).get(0).getData()
 				.get("ID").toString());
 
@@ -237,7 +237,7 @@ public class SearchController {
 				
 				List<String> plantID = Common.getListImageBySearchResult(result);
 				
-				List<ImageData> images = new ArrayList<ImageData>();
+				List<BinImageData> images = new ArrayList<BinImageData>();
 				for(String pID: plantID){
 					images.addAll(imageDataService.findByPlantID(pID));
 				}

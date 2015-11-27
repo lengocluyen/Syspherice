@@ -63,10 +63,10 @@
 
 							<div class="gallery-item" style="margin-top: 15px;">
 								<a class="fancybox" rel="gallery1"
-									href="${pageContext.request.contextPath}/${imageobject.url}">
+									href="${pageContext.request.contextPath}/${imageobject.urlTemps}">
 									<div class="gallery-thumb">
 										<img
-											src="${pageContext.request.contextPath}/${imageobject.url}"
+											src="${pageContext.request.contextPath}/${imageobject.urlTemps}"
 											alt="">
 									</div>
 									<div class="gallery-content">

@@ -68,7 +68,7 @@
 				</p>
 				<p class="full-row">
 					<span class="import-label"> <label for="fileUrl">Url
-							File Excel:</label> <span class="small-text">Choose data file</span>
+							File Excel:</label> <span class="small-text">Choose data file <span style="color:red;"> </br>with no space in file name</span></span>
 					</span>
 					<form:input path="fileUrl" />&nbsp;&nbsp;&nbsp;<form:errors path="fileUrl" cssClass="error"/>
 					<input id="iframe" class='mainBtn' style="margin-left:10px;" type="button"

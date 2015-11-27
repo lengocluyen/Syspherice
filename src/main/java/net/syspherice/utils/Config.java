@@ -27,6 +27,8 @@ public class Config {
 	public static final ExtensionsFilter IMAGE_FILTER;
 	public static final String URL_AVATAR_DEFAULT;
 	public static final String INTRODUCTION_FILE_URL;
+	public static final String TEMPS_PHYSICAL_PATH_IMAGE;
+	public static final String TEMPS_WEB_PATH_IMAGE;
 	static{
 		ResourceBundle rb=ResourceBundle.getBundle("config");
 		
@@ -42,5 +44,7 @@ public class Config {
 		URL_AVATAR_DEFAULT=  rb.getString("CONTEXT_PATH") + rb.getString("URL_AVATAR_DEFAULT");
 		IMAGE_FILTER = new ExtensionsFilter(new String[]{".png",".jpg",".bmp"});
 		INTRODUCTION_FILE_URL = rb.getString("INTRODUCTION_FILE_URL");
+		TEMPS_PHYSICAL_PATH_IMAGE = rb.getString("TEMPS_PHYSICAL_PATH_IMAGE");
+		TEMPS_WEB_PATH_IMAGE = rb.getString("TEMPS_WEB_PATH_IMAGE");
 	}
 }

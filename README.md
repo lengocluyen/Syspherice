@@ -1,1 +1,0 @@
-# phenowaredb-to-mongodb-convertor

@@ -72,9 +72,14 @@ public class MenuBuild {
 		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/searchtype/index", "Type search", ""),searchtype));
 		
 		ArrayList<MenuItem> imagedata = new ArrayList<MenuItem>();
-		imagedata.add(new MenuItem("/Syspherice/imagedata/import", "Import image data", ""));
-		imagedata.add(new MenuItem("/Syspherice/imagedata/index", "Image data list", ""));
-		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/imagedata/index", "Image data", ""),imagedata));
+		imagedata.add(new MenuItem("/Syspherice/binimagedata/import", "Import image data", ""));
+		imagedata.add(new MenuItem("/Syspherice/binimagedata/index", "Image data list", ""));
+		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/binimagedata/index", "Image data", ""),imagedata));
+		
+		ArrayList<MenuItem> xmldata = new ArrayList<MenuItem>();
+		xmldata.add(new MenuItem("/Syspherice/binxmldata/import", "Import xml data", ""));
+		xmldata.add(new MenuItem("/Syspherice/binxmldata/index", "Xml data list", ""));
+		list.add(new MenuItemAdmin(new MenuItem("/Syspherice/binxmldata/index", "Xml data", ""),xmldata));
 		
 		ArrayList<MenuItem> tagmenu = new ArrayList<MenuItem>();
 		tagmenu.add(new MenuItem("/Syspherice/tags/index", "Tags list", ""));

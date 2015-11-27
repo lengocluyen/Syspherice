@@ -138,12 +138,12 @@
 													});
 										});
 							</script>
+							<c:set var="count" value="0" scope="page" />
 							<c:forEach items="${searchresult}" var="result">
 								<h3>
 									Collection: <span class="titlecollection">${result.key }</span>
 								</h3>
 								<div style="overflow: auto;">
-									<c:set var="count" value="0" scope="page" />
 									<c:if test="${!empty result.value}">
 									<c:set var="count" value="${count + 1}" scope="page" />
 										<table class="table-data">

@@ -5,6 +5,7 @@ public enum ImageDataEnum {
 		ImageID("_id"),
 		Name("Name"),
 		Url("Url"),
+		UrlTemps("UrlTemps"),
 		// link to Plant in ExcelDataDoc with field ID
 		PlantID("PlantID"),
 		Sowing_nb("Sowing_nb"),

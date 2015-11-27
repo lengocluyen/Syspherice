@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpSession;
 
-import net.syspherice.form.ImageData;
+import net.syspherice.form.BinImageData;
 import net.syspherice.form.SearchType;
 import net.syspherice.form.UnidentifiedObject;
 
@@ -42,6 +42,54 @@ import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class Common {
+	public static String CutWithInterval(String field, String name) {
+
+		// cas <=
+		name = name.replaceAll("<=", "__hoai__");
+		// cas >=
+		name = name.replaceAll(">=", "__khong__");
+		// cas =
+		name = name.replaceAll("=", "this." + field + "==");
+		// cas <
+		name = name.replaceAll("<", "this." + field + "<");
+		// cas >
+		name = name.replaceAll(">", "this." + field + ">");
+		name = name.replaceAll("__hoai__", "this." + field + "<=");
+		// cas <
+		name = name.replaceAll("__khong__", "this." + field + ">=");
+
+		// cas and
+		name = name.replaceAll(" & ", "&&");
+		name = name.replaceAll(" and ", "&&");
+
+		//name = name.replaceAll("|", "||");
+		name = name.replaceAll(" or ", "||");
+
+		return name;
+	}
+
+	public static List<String> CutWithAnd(String Name) {
+		List<String> rs = new ArrayList();
+		if (Name.indexOf(" and ") > 0 || Name.indexOf(" or ") > 0
+				|| Name.indexOf(" & ") > 0 || Name.indexOf(" | ") > 0) {
+			String[] rAnd = Name.split(" and ");
+
+			for (int i = 0; i < rAnd.length; i++) {
+				String[] rOr = rAnd[i].split(" or ");
+				for (int j = 0; j < rOr.length; j++) {
+					String[] rAnd1 = rOr[j].split(" & ");
+					for (int k = 0; k < rAnd1.length; k++) {
+						String[] rOr1 = rAnd1[k].split(" | ");
+						for (int h = 0; h < rOr1.length; h++) {
+							rs.add(rOr1[h]);
+						}
+					}
+				}
+			}
+		}
+		return rs;
+	}
+
 	// write data to xls
 	public static List<String> getListImageBySearchResult(
 			Map<String, List<UnidentifiedObject>> data) {
@@ -82,7 +130,7 @@ public class Common {
 	}
 
 	public static File findFileInListForArray(File[] list, String str) {
-		if(list==null||list.length<1)
+		if (list == null || list.length < 1)
 			return null;
 		for (int i = 0; i < list.length; i++) {
 			if (list[i].getName().compareTo(str) == 0) {
@@ -92,27 +140,28 @@ public class Common {
 		return null;
 	}
 
-	public static Boolean copyImageToFolderTemp(List<ImageData> images,
+	public static Boolean copyImageToFolderTemp(List<BinImageData> images,
 			String folderTemp, HttpSession session) {
 
 		File folderOrigine = new File(folderTemp);
 		if (!folderOrigine.exists())
 			folderOrigine.mkdirs();
 		try {
-			for (ImageData data : images) {
-				File img = new File(Config.ROOT_PATH	+ data.getUrl().substring(7, data.getUrl().length()));
+			for (BinImageData data : images) {
+				File img = new File(Config.ROOT_PATH
+						+ data.getUrl().substring(7, data.getUrl().length()));
 				File[] files = folderOrigine.listFiles();
 				File toFile = findFileInListForArray(files,
 						"G" + data.getPlantID());
 				if (toFile != null) {
-					if(toFile.isDirectory())
+					if (toFile.isDirectory())
 						FileUtils.copyFileToDirectory(img, toFile);
 				} else {
 					File newFolder = new File(folderTemp + "/G"
 							+ data.getPlantID());
 					newFolder.mkdirs();
-					if(newFolder.isDirectory())
-					FileUtils.copyFileToDirectory(img, newFolder);
+					if (newFolder.isDirectory())
+						FileUtils.copyFileToDirectory(img, newFolder);
 				}
 			}
 		} catch (Exception e) {
